@@ -1,0 +1,60 @@
+[
+    {
+        "id": "0",
+        "title": "Top",
+        "num": 1,
+        "datas": {
+            "id":"2",
+            "serieses":
+            [
+                {
+                    "id": "0",
+                    "title": "小説シリーズ１",
+                    "num": 1,
+                    "datas":
+                    {
+                        "id":"3",
+                        "serieses":[],
+                        "details":[]
+                    }
+                },
+                {
+                    "id": "1",
+                    "title": "小説",
+                    "num": 2,
+                    "datas":
+                    {
+                        "id": "5",
+                        "serieses":[
+                            {
+                                "id": "0",
+                                "title": "小説シリーズ１",
+                                "num": 2,
+                                "datas":
+                                {
+                                    "id":"3",
+                                    "serieses":[],
+                                    "details":[]
+                                }
+                            }
+                        ],
+                        "details":[
+                            {
+                                "id": "3",
+                                "title": "できたってま？",
+                                "message": "マジだ"
+                            },
+                        ]
+                    }
+                }
+            ],
+            "details": [
+                {
+                    "id": "0",
+                    "title": "概要",
+                    "message": "超いいシリーズ"
+                }
+            ]
+        }
+    }
+]
