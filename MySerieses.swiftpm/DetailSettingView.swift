@@ -92,11 +92,3 @@ struct DetailSettingView: View {
         .padding(40)
     }
 }
-
-/*
-struct DetailSettingView_Previews: PreviewProvider {
-    static var previews: some View {
-        DetailSettingView()
-    }
-}
-*/

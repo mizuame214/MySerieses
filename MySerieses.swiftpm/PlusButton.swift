@@ -38,10 +38,3 @@ struct PlusButton: View {
         }
     }
 }
-/*
-struct PlusButton_Previews: PreviewProvider {
-    static var previews: some View {
-        PlusButton()
-    }
-}
-*/
