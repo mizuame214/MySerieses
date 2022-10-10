@@ -11,17 +11,16 @@ struct DetailSettingView: View {
     var lastNum: Int
     @State var num: Int = 0
     
-    func blackOrGray(fibI: Int, fibNoNum: [Int]) -> Bool
+    func blackOrGray(fibI: Int) -> Bool
     {
-        var fibBool: Bool = false
-        for nnl in fibNoNum
+        for nnl in noNumList
         {
-            if fibI == nnl
+            if fibI == nnl || lastNum < fibI
             {
-                fibBool = true
+                return true
             }
         }
-        return fibBool
+        return false
     }
     
     var body: some View {
@@ -62,7 +61,7 @@ struct DetailSettingView: View {
                     ForEach(numMinusTwo ... num+2, id:\.self)
                     { i in
                         Text(String(i))
-                            .foregroundColor(blackOrGray(fibI: i, fibNoNum: noNumList) ? .black : Color(red: 0.8, green: 0.8, blue: 0.8))
+                        .foregroundColor(blackOrGray(fibI: i) ? .black : Color(red: 0.8, green: 0.8, blue: 0.8))
                     }
                 }
                 .pickerStyle(.wheel)
