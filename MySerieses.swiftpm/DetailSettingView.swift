@@ -51,6 +51,7 @@ struct DetailSettingView: View {
                 .padding(10)
                 .frame(height:40)
                 .border(.gray, width:0.5)
+                .padding(.bottom, 20)
             }
             
             //ボタン
@@ -74,7 +75,7 @@ struct DetailSettingView: View {
                     ZStack
                     {
                         RoundedRectangle(cornerRadius:8)
-                        .frame(maxWidth:.infinity, maxHeight:60)
+                        .frame(maxWidth:200, maxHeight:60)
                         .foregroundColor(.teal)
                         .shadow(radius: 3)
                         .padding(.vertical, 25)
