@@ -19,7 +19,7 @@ struct FirstView: View {
     {
         var nums:[Int] = NumberSort(fibData: thisBooks)
         //1~最終巻のIntリストから実際にあるリストを引く。
-        var noNumList = Array(1...nums[nums.count - 1]).filter
+        let noNumList = Array(1...nums[nums.count - 1]).filter
         {
             v in return !nums.contains(v)
         }
@@ -87,7 +87,7 @@ struct FirstView: View {
                 //SeriesData.clear(path: seriesJsonPath)
             }
             
-            PlusButton(thisBooks: $thisBooks)
+            PlusButton(thisBooks: $thisBooks, noNumList: noNumList, lastNum: nums[nums.count - 1])
         }
     }
 }

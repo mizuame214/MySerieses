@@ -7,8 +7,22 @@ struct DetailSettingView: View {
     @Binding var thisBooks: SeriesData
     @Binding var isPresentShown: Bool
     @State var seriesOrNot: Bool = true
+    var noNumList: [Int]
+    var lastNum: Int
+    @State var num: Int = 0
     
-    @State var notNum: Bool = false
+    func blackOrGray(fibI: Int, fibNoNum: [Int]) -> Bool
+    {
+        var fibBool: Bool = false
+        for nnl in fibNoNum
+        {
+            if fibI == nnl
+            {
+                fibBool = true
+            }
+        }
+        return fibBool
+    }
     
     var body: some View {
         VStack
@@ -40,13 +54,34 @@ struct DetailSettingView: View {
                 .foregroundColor(Color(red:0.3, green:0.3, blue:0.3))
                 Spacer()
             }
-            //最下層がいいな。でもシリーズ番号見せてないから何巻が足りないのか適当なタイトルつけてたら分からんく無い？　一番上に載せとくか。どうやって？
-            TextField($seriesOrNot.wrappedValue ? "番号" : "内容", text : $seriesOrNot.wrappedValue ? $numMS : $messageMS)
-            .padding(10)
-            .frame(height:40)
-            .border(.gray, width:0.5)
-            Text(notNum ? "整数で入力してください" : "")
-                .foregroundColor(.red)
+            if $seriesOrNot.wrappedValue == true
+            {
+                Picker("番号", selection: $num)
+                {
+                    let numMinusTwo: Int = num-2 > 0 ? num-2 : 1
+                    ForEach(numMinusTwo ... num+2, id:\.self)
+                    { i in
+                        Text(String(i))
+                            .foregroundColor(blackOrGray(fibI: i, fibNoNum: noNumList) ? .black : Color(red: 0.8, green: 0.8, blue: 0.8))
+                    }
+                }
+                .pickerStyle(.wheel)
+                //上の方押すと勝手に回っちゃう
+                .frame(height: 60)
+                //機能しないらしい.compositingGroup()
+                .clipped()
+                .onAppear()
+                {
+                    num = lastNum + 1
+                }
+            }
+            else
+            {
+                TextField("内容", text : $messageMS)
+                .padding(10)
+                .frame(height:40)
+                .border(.gray, width:0.5)
+            }
             
             //ボタン
             HStack
@@ -55,15 +90,6 @@ struct DetailSettingView: View {
                 {
                     if $seriesOrNot.wrappedValue == true
                     {
-                        //シリーズ
-                        //-1はできるのに0できないどうしよ
-                        if Int(numMS) ?? 0 == 0
-                        {
-                            notNum = true
-                            return
-                        }
-                        let num = Int(numMS) ?? thisBooks.datas.serieses.count + 1
-                        
                         thisBooks.datas.serieses.append(SeriesData(title: titleMS, num: num, datas: SeriesesAndDetailsData(serieses: [], details: [])))
                     }
                     else
