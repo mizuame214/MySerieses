@@ -16,9 +16,8 @@ struct InfoView: View {
             HStack
             {
                 Text(mainText)
-                .padding(.top, 5)
-                .padding(.leading, -5)
-                .padding(.bottom, 5)
+                .padding(.vertical, 5)
+                .padding(.leading, 5)
                 Spacer()
             }
             .padding(.horizontal)

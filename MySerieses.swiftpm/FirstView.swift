@@ -18,12 +18,22 @@ struct FirstView: View {
     var body: some View
     {
         var nums:[Int] = NumberSort(fibData: thisBooks)
+        //1~最終巻のIntリストから実際にあるリストを引く。
+        var noNumList = Array(1...nums[nums.count - 1]).filter
+        {
+            v in return !nums.contains(v)
+        }
         
         ZStack
         {
             List
             {
-                //ない番号のリスト
+                //無い巻の表示
+                if noNumList != []
+                {
+                    let noNumStr = noNumList.map {String($0)}
+                    Text(noNumStr.joined(separator: ", "))
+                }
                 
                 //詳細部分の表示
                 Section
@@ -61,6 +71,7 @@ struct FirstView: View {
                     .onDelete
                     { indexSet in
                         thisBooks.datas.serieses.remove(atOffsets:indexSet)
+                        //これより下のnumを-1する
                     }
                     .onChange(of: thisBooks)
                     {thisBooks in
