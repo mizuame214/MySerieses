@@ -8,7 +8,7 @@ struct DetailSettingView: View {
     @Binding var isPresentShown: Bool
     @State var seriesOrNot: Bool = true
     var noNumList: [Int]
-    var lastNum: Int
+    var nums: [Int]
     @State var num: Int = 0
     
     var body: some View {
@@ -43,7 +43,7 @@ struct DetailSettingView: View {
             }
             if $seriesOrNot.wrappedValue == true
             {
-                SeriesNumPicker(noNumList: noNumList, lastNum: lastNum, num: $num)
+                SeriesNumPicker(noNumList: noNumList, nums: nums, num: $num)
             }
             else
             {

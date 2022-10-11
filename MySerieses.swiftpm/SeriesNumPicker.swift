@@ -2,19 +2,31 @@ import SwiftUI
 
 struct SeriesNumPicker: View {
     var noNumList: [Int]
-    var lastNum: Int
+    var nums: [Int]
     @Binding var num: Int
     
-    func blackOrGray(fibI: Int) -> Bool
+    func blackOrGray(fibI: Int) -> Color
     {
-        for nnl in noNumList
+        if nums != []
         {
-            if fibI == nnl || lastNum < fibI
+            //ある最終巻より後は黒
+            if nums[nums.count - 1] < fibI
             {
-                return true
+                return .black
             }
+            //noNumListにあるやつは黒
+            for nnl in noNumList
+            {
+                if fibI == nnl
+                {
+                    return .black
+                }
+            }
+            //それ以外のnumsに書いてあるやつは灰
+            return Color(red: 0.8, green: 0.8, blue: 0.8)
         }
-        return false
+        //numsが空っぽなら全部黒
+        return .black
     }
     
     var body: some View {
@@ -24,7 +36,7 @@ struct SeriesNumPicker: View {
             ForEach(numMinusTwo ... num+2, id:\.self)
             { i in
                 Text(String(i))
-                .foregroundColor(blackOrGray(fibI: i) ? .black : Color(red: 0.8, green: 0.8, blue: 0.8))
+                .foregroundColor(blackOrGray(fibI: i))
             }
         }
         .pickerStyle(.wheel)
@@ -34,7 +46,21 @@ struct SeriesNumPicker: View {
         .clipped()
         .onAppear()
         {
-            num = lastNum + 1
+            if nums != []
+            {
+                if noNumList != []
+                {
+                    num = noNumList[0]
+                }
+                else
+                {
+                    num = nums[nums.count - 1] + 1
+                }
+            }
+            else
+            {
+                num = 1
+            }
         }
     }
 }

@@ -2,9 +2,10 @@ import SwiftUI
 
 struct FirstView: View {
     @Binding var thisBooks: SeriesData
+    var noNumList: [Int] = []
     
     //画面に映ってるシリーズのnumたちをappendしてソートする。
-    func NumberSort(fibData: SeriesData) -> [Int]
+    func numberSort(fibData: SeriesData) -> [Int]
     {
         var fibNums: [Int] = []
         for series in fibData.datas.serieses
@@ -15,14 +16,24 @@ struct FirstView: View {
         return fibNums
     }
     
+    func noNumList(fibNums: [Int]) -> [Int]
+    {
+        var fibNoNumList: [Int] = []
+        if fibNums != []
+        {
+            //1~最終巻のIntリストから実際にあるリストを引く。
+            fibNoNumList = Array(1...fibNums[fibNums.count - 1]).filter
+            {
+                v in return !fibNums.contains(v)
+            }
+        }
+        return fibNoNumList
+    }
+    
     var body: some View
     {
-        var nums:[Int] = NumberSort(fibData: thisBooks)
-        //1~最終巻のIntリストから実際にあるリストを引く。
-        let noNumList = Array(1...nums[nums.count - 1]).filter
-        {
-            v in return !nums.contains(v)
-        }
+        var nums: [Int] = numberSort(fibData: thisBooks)
+        let noNumList: [Int] = noNumList(fibNums: nums)
         
         ZStack
         {
@@ -75,7 +86,7 @@ struct FirstView: View {
                     }
                     .onChange(of: thisBooks)
                     {thisBooks in
-                        nums = NumberSort(fibData: thisBooks)
+                        nums = numberSort(fibData: thisBooks)
                     }
                 }
             }
@@ -87,7 +98,7 @@ struct FirstView: View {
                 //SeriesData.clear(path: seriesJsonPath)
             }
             
-            PlusButton(thisBooks: $thisBooks, noNumList: noNumList, lastNum: nums[nums.count - 1])
+            PlusButton(thisBooks: $thisBooks, noNumList: noNumList, nums: nums)
         }
     }
 }

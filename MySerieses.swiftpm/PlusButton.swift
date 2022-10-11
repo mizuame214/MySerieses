@@ -4,7 +4,7 @@ struct PlusButton: View {
     @State var isPresentShown:Bool = false
     @Binding var thisBooks: SeriesData
     var noNumList: [Int]
-    var lastNum: Int
+    var nums: [Int]
     
     var body: some View {
         HStack
@@ -33,7 +33,7 @@ struct PlusButton: View {
                 }
                 .sheet(isPresented: $isPresentShown)
                 {
-                    DetailSettingView(thisBooks: $thisBooks, isPresentShown: $isPresentShown, noNumList: noNumList, lastNum: lastNum)
+                    DetailSettingView(thisBooks: $thisBooks, isPresentShown: $isPresentShown, noNumList: noNumList, nums: nums)
                 }
             }
             .padding()
