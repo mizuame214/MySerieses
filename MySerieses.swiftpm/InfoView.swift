@@ -1,10 +1,12 @@
 import SwiftUI
 
-struct InfoView: View {
-    var title:String
-    var mainText:String
+struct InfoView: View
+{
+    var title: String
+    var mainText: String
     
-    var body: some View {
+    var body: some View
+    {
         VStack
         {
             HStack
@@ -16,20 +18,20 @@ struct InfoView: View {
             HStack
             {
                 Text(mainText)
-                .padding(.top, 5)
-                .padding(.leading, -5)
-                .padding(.bottom, 5)
+                .padding(.vertical, 5)
                 Spacer()
             }
-            .padding(.horizontal)
+            .padding(.leading,25)
             Spacer()
         }
         .padding(.top)
     }
 }
 
-struct InfoView_Previews: PreviewProvider {
-    static var previews: some View {
+struct InfoView_Previews: PreviewProvider
+{
+    static var previews: some View
+    {
         InfoView(title:"あらすじ", mainText:"感情のない空々空の英雄譚")
     }
 }

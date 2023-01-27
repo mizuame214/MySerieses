@@ -1,16 +1,20 @@
 import SwiftUI
 
-struct DetailSettingView: View {
+struct DetailSettingView: View
+{
     @State var titleMS:String = ""
     @State var numMS:String = ""
     @State var messageMS:String = ""
     @Binding var thisBooks: SeriesData
     @Binding var isPresentShown: Bool
     @State var seriesOrNot: Bool = true
+    var noNumList: [Int]
+    var nums: [Int]
+    @State var num: Int = 0
+    @State var reNum: Bool = false
     
-    @State var notNum: Bool = false
-    
-    var body: some View {
+    var body: some View
+    {
         VStack
         {
             Picker("シリーズか詳細か", selection: $seriesOrNot)
@@ -40,30 +44,28 @@ struct DetailSettingView: View {
                 .foregroundColor(Color(red:0.3, green:0.3, blue:0.3))
                 Spacer()
             }
-            //最下層がいいな。でもシリーズ番号見せてないから何巻が足りないのか適当なタイトルつけてたら分からんく無い？　一番上に載せとくか。どうやって？
-            TextField($seriesOrNot.wrappedValue ? "番号" : "内容", text : $seriesOrNot.wrappedValue ? $numMS : $messageMS)
-            .padding(10)
-            .frame(height:40)
-            .border(.gray, width:0.5)
-            Text(notNum ? "整数で入力してください" : "")
-                .foregroundColor(.red)
+            if $seriesOrNot.wrappedValue == true
+            {
+                SeriesNumPicker(noNumList: noNumList, nums: nums, num: $num)
+            }
+            else
+            {
+                //2行にできないかな？
+                TextField("内容", text : $messageMS)
+                .padding(10)
+                .frame(height:60)
+                .border(.gray, width:0.5)
+                .padding(.bottom, 20)
+            }
             
-            //ボタン
+            //作成ボタン
             HStack
             {
                 Button
                 {
                     if $seriesOrNot.wrappedValue == true
                     {
-                        //シリーズ
-                        //-1はできるのに0できないどうしよ
-                        if Int(numMS) ?? 0 == 0
-                        {
-                            notNum = true
-                            return
-                        }
-                        let num = Int(numMS) ?? thisBooks.datas.serieses.count + 1
-                        
+                        //num関連
                         thisBooks.datas.serieses.append(SeriesData(title: titleMS, num: num, datas: SeriesesAndDetailsData(serieses: [], details: [])))
                     }
                     else
@@ -78,7 +80,7 @@ struct DetailSettingView: View {
                     ZStack
                     {
                         RoundedRectangle(cornerRadius:8)
-                        .frame(maxWidth:.infinity, maxHeight:60)
+                        .frame(maxWidth:200, maxHeight:60)
                         .foregroundColor(.teal)
                         .shadow(radius: 3)
                         .padding(.vertical, 25)

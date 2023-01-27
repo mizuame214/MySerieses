@@ -1,9 +1,11 @@
 import SwiftUI
 //今使ってない
-struct NotEnoughBar: View {
+struct NotEnoughBar: View
+{
     var col: Color
     
-    var body: some View {
+    var body: some View
+    {
         HStack
         {
             Rectangle()
@@ -14,8 +16,10 @@ struct NotEnoughBar: View {
     }
 }
 
-struct NotEnoughBar_Previews: PreviewProvider {
-    static var previews: some View {
+struct NotEnoughBar_Previews: PreviewProvider
+{
+    static var previews: some View
+    {
         NotEnoughBar(col: .yellow)
             .previewInterfaceOrientation(.portrait)
     }

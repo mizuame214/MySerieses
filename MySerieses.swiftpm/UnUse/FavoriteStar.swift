@@ -1,7 +1,9 @@
 import SwiftUI
 
-struct FavoriteStar: View {
-    var body: some View {
+struct FavoriteStar: View
+{
+    var body: some View
+    {
         Button
         {
             
@@ -14,8 +16,10 @@ struct FavoriteStar: View {
     }
 }
 
-struct FavoriteStar_Previews: PreviewProvider {
-    static var previews: some View {
+struct FavoriteStar_Previews: PreviewProvider
+{
+    static var previews: some View
+    {
         FavoriteStar()
     }
 }

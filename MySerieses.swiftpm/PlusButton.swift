@@ -1,10 +1,15 @@
 import SwiftUI
 
-struct PlusButton: View {
+struct PlusButton: View
+{
     @State var isPresentShown:Bool = false
+    //今表示されてるシリーズデータ
     @Binding var thisBooks: SeriesData
+    var noNumList: [Int]
+    var nums: [Int]
     
-    var body: some View {
+    var body: some View
+    {
         HStack
         {
             Spacer()
@@ -31,7 +36,7 @@ struct PlusButton: View {
                 }
                 .sheet(isPresented: $isPresentShown)
                 {
-                    DetailSettingView(thisBooks: $thisBooks, isPresentShown: $isPresentShown)
+                    DetailSettingView(thisBooks: $thisBooks, isPresentShown: $isPresentShown, noNumList: noNumList, nums: nums)
                 }
             }
             .padding()

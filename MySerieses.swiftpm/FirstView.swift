@@ -1,10 +1,12 @@
 import SwiftUI
 
-struct FirstView: View {
+struct FirstView: View
+{
     @Binding var thisBooks: SeriesData
+    var noNumList: [Int] = []
     
     //画面に映ってるシリーズのnumたちをappendしてソートする。
-    func NumberSort(fibData: SeriesData) -> [Int]
+    func numberSort(fibData: SeriesData) -> [Int]
     {
         var fibNums: [Int] = []
         for series in fibData.datas.serieses
@@ -15,15 +17,36 @@ struct FirstView: View {
         return fibNums
     }
     
+    func makeNoNumList(fibNums: [Int]) -> [Int]
+    {
+        var fibNoNumList: [Int] = []
+        if fibNums != []
+        {
+            //1~最終巻のIntリストから実際にあるリストを引く。
+            fibNoNumList = Array(1...fibNums[fibNums.count - 1]).filter
+            {
+                v in return !fibNums.contains(v)
+            }
+        }
+        return fibNoNumList
+    }
+    
     var body: some View
     {
-        var nums:[Int] = NumberSort(fibData: thisBooks)
+        var nums: [Int] = numberSort(fibData: thisBooks)
+        var noNumList: [Int] = makeNoNumList(fibNums: nums)
         
         ZStack
         {
             List
             {
-                //ない番号のリスト
+                //無い巻の表示どうしよう
+                if noNumList != []
+                {
+                    let noNumStr = noNumList.map {String($0)}
+                    let text: String = noNumStr.joined(separator: ", ")
+                    InfoView(title: "無い巻", mainText: text)
+                }
                 
                 //詳細部分の表示
                 Section
@@ -34,7 +57,7 @@ struct FirstView: View {
                     }
                     .onDelete
                     { indexSet in
-                        thisBooks.datas.details.remove(atOffsets:indexSet)
+                        thisBooks.datas.details.remove(atOffsets: indexSet)
                     }
                 }
                 //シリーズ部分の表示
@@ -44,7 +67,6 @@ struct FirstView: View {
                     { num in
                         ForEach($thisBooks.datas.serieses)
                         { series in
-                            //ソートできたけど同じシリーズ番号があると増殖する
                             if num == series.num.wrappedValue
                             {
                                 NavigationLink( destination:
@@ -53,18 +75,20 @@ struct FirstView: View {
                                 },
                                 label:
                                 {
-                                    AList(data:series.wrappedValue)
+                                    AList(data: series.wrappedValue)
                                 })
                             }
                         }
                     }
                     .onDelete
                     { indexSet in
+                        //num関連
                         thisBooks.datas.serieses.remove(atOffsets:indexSet)
                     }
                     .onChange(of: thisBooks)
                     {thisBooks in
-                        nums = NumberSort(fibData: thisBooks)
+                        nums = numberSort(fibData: thisBooks)
+                        noNumList = makeNoNumList(fibNums: nums)
                     }
                 }
             }
@@ -76,7 +100,7 @@ struct FirstView: View {
                 //SeriesData.clear(path: seriesJsonPath)
             }
             
-            PlusButton(thisBooks: $thisBooks)
+            PlusButton(thisBooks: $thisBooks, noNumList: noNumList, nums: nums)
         }
     }
 }
