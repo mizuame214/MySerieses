@@ -1,6 +1,7 @@
 import SwiftUI
 
-struct DetailSettingView: View {
+struct DetailSettingView: View
+{
     @State var titleMS:String = ""
     @State var numMS:String = ""
     @State var messageMS:String = ""
@@ -10,8 +11,10 @@ struct DetailSettingView: View {
     var noNumList: [Int]
     var nums: [Int]
     @State var num: Int = 0
+    @State var reNum: Bool = false
     
-    var body: some View {
+    var body: some View
+    {
         VStack
         {
             Picker("シリーズか詳細か", selection: $seriesOrNot)
@@ -47,20 +50,22 @@ struct DetailSettingView: View {
             }
             else
             {
+                //2行にできないかな？
                 TextField("内容", text : $messageMS)
                 .padding(10)
-                .frame(height:40)
+                .frame(height:60)
                 .border(.gray, width:0.5)
                 .padding(.bottom, 20)
             }
             
-            //ボタン
+            //作成ボタン
             HStack
             {
                 Button
                 {
                     if $seriesOrNot.wrappedValue == true
                     {
+                        //num関連
                         thisBooks.datas.serieses.append(SeriesData(title: titleMS, num: num, datas: SeriesesAndDetailsData(serieses: [], details: [])))
                     }
                     else

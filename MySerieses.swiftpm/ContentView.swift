@@ -2,7 +2,8 @@ import SwiftUI
 
 public let seriesJsonPath = LocalPath.localFile(fibName: "SeriesesData", fibExt: "json")
 
-struct ContentView: View {
+struct ContentView: View
+{
     @State var books:[SeriesData] = loadBooks()
     
     static func loadBooks() -> [SeriesData]
@@ -15,7 +16,8 @@ struct ContentView: View {
         return data
     }
     
-    var body: some View {
+    var body: some View
+    {
         VStack
         {
             //初期値

@@ -1,10 +1,12 @@
 import SwiftUI
 
-struct SeriesNumPicker: View {
+struct SeriesNumPicker: View
+{
     var noNumList: [Int]
     var nums: [Int]
     @Binding var num: Int
     
+    //ピッカーの文字色を決める（あるシリーズ番号は灰色）
     func blackOrGray(fibI: Int) -> Color
     {
         if nums != []
@@ -29,7 +31,8 @@ struct SeriesNumPicker: View {
         return .black
     }
     
-    var body: some View {
+    var body: some View
+    {
         Picker("番号", selection: $num)
         {
             let numMinusTwo: Int = num-2 > 0 ? num-2 : 1
@@ -40,10 +43,8 @@ struct SeriesNumPicker: View {
             }
         }
         .pickerStyle(.wheel)
-        //上の方押すと勝手に回っちゃう
-        .frame(height: 60)
-        //機能しないらしい.compositingGroup()
-        .clipped()
+        .frame(height: 80)
+        //抜けリストの一番最初 or あるシリーズ番号の次 or 1
         .onAppear()
         {
             if nums != []
