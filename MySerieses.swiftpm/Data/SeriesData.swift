@@ -7,11 +7,6 @@ struct SeriesData : Identifiable, Codable, Equatable
     var num: Int
     var datas: SeriesesAndDetailsData
     
-    mutating func changeNum(add: Int)
-    {
-        self.num += add
-    }
-    
     static func parse(json: Data) -> [SeriesData]
     {
         do

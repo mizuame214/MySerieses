@@ -3,7 +3,6 @@ import SwiftUI
 struct FirstView: View
 {
     @Binding var thisBooks: SeriesData
-    var noNumList: [Int] = []
     
     @State var editMode: EditMode = .inactive
     
@@ -57,14 +56,6 @@ struct FirstView: View
                     { detail in
                         InfoView(title: detail.title.wrappedValue, mainText: detail.message.wrappedValue)
                     }
-                    .onMove
-                    { from, to in
-                        thisBooks.datas.details.move(fromOffsets: from, toOffset: to)
-                    }
-                    .onDelete
-                    { indexSet in
-                        thisBooks.datas.details.remove(atOffsets: indexSet)
-                    }
                 }
                 //シリーズ部分の表示
                 Section
@@ -86,17 +77,8 @@ struct FirstView: View
                             }
                         }
                     }
-                    .onMove
-                    { from, to in
-                        thisBooks.datas.serieses.move(fromOffsets: from, toOffset: to)
-                    }
-                    .onDelete
-                    { indexSet in
-                        //indexSetより後ろのnumsのシリーズnumを-1
-                        thisBooks.datas.serieses.remove(atOffsets: indexSet)
-                    }
                     .onChange(of: thisBooks)
-                    {thisBooks in
+                    { thisBooks in
                         nums = numberSort(fibData: thisBooks)
                         noNumList = makeNoNumList(fibNums: nums)
                     }
@@ -111,21 +93,14 @@ struct FirstView: View
             .navigationTitle(thisBooks.title)
             //.onMoveがEditMode無しで動くならいらないとこ
             .navigationBarItems(trailing:
-                Button(
-                    action:
+                NavigationLink(
+                    destination:
                         {
-                            self.editMode = self.editMode.isEditing ? .inactive : .active
+                            EditView(thisBooks: $thisBooks, isPre: false)
                         },
                         label:
                         {
-                            if self.editMode.isEditing
-                            {
-                                Image.init(systemName: "checkmark")
-                            }
-                            else
-                            {
-                                Image.init(systemName: "square.and.pencil")
-                            }
+                            Image.init(systemName: "square.and.pencil")
                         }
                 )
             )
