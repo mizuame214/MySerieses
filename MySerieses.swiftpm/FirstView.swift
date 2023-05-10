@@ -51,7 +51,7 @@ struct FirstView: View
     {
         var nums: [Int] = numberSort(fibData: thisBooks)
         var noNumList: [Int] = makeNoNumList(fibNums: nums)
-        var seriesList: [SeriesData] = makeSortList(fibData: thisBooks, fibNums: nums)
+        var seriesList = makeSortList(fibData: thisBooks, fibNums: nums)
         
         ZStack
         {
@@ -94,12 +94,6 @@ struct FirstView: View
                             }
                         }
                     }
-                    .onChange(of: thisBooks)
-                    { thisBooks in
-                        nums = numberSort(fibData: thisBooks)
-                        noNumList = makeNoNumList(fibNums: nums)
-                        seriesList = makeSortList(fibData: thisBooks, fibNums: nums)
-                    }
                 }
             }
             .listStyle(.insetGrouped)
@@ -107,6 +101,12 @@ struct FirstView: View
             {
                 //データ削除
                 //SeriesData.clear(path: seriesJsonPath)
+            }
+            .onChange(of: thisBooks)
+            { thisBooks in
+                nums = numberSort(fibData: thisBooks)
+                noNumList = makeNoNumList(fibNums: nums)
+                seriesList = makeSortList(fibData: thisBooks, fibNums: nums)
             }
             .navigationTitle(thisBooks.title)
             .navigationBarItems(trailing:

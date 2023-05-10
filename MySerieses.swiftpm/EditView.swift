@@ -13,44 +13,24 @@ struct EditView: View
     
     var body: some View
     {
-        //var lists: [SeriesData] = makeSortList(fibData: thisBooks, fibNums: nums)
-        
         ZStack
         {
             List
             {
-                if seriesList != []
-                {
-                    //let numStr = seriesList.map {String($0)}
-                    //let text: String = numStr.joined(separator: ", ")
-                    //InfoView(title: "順", mainText: text)
-                }
-                
                 //詳細部分の表示
                 Section
                 {
                     ForEach($thisBooks.datas.details)
                     { detail in
-                        Button(action:
-                        {
-                            isPre = true
-                        },
-                        label:
-                        {
-                            InfoView(title: detail.title.wrappedValue, mainText: detail.message.wrappedValue)
-                        })
-                        .sheet(isPresented: $isPre)
-                        {
-                            //一つ一つリストの編集画面
-                        }
+                        EditInfoView(title: detail.title, mainText: detail.message)
                     }
                     .onMove
                     { from, to in
-                        //thisBooks.datas.details.move(fromOffsets: from, toOffset: to)
+                        thisBooks.datas.details.move(fromOffsets: from, toOffset: to)
                     }
                     .onDelete
                     { indexSet in
-                        //indexSetが表示されてる順と違うから、消すと一個上とかが消えるんだ
+                        //できてるっぽい
                         thisBooks.datas.details.remove(atOffsets: indexSet)
                     }
                 }
@@ -80,8 +60,9 @@ struct EditView: View
                     }
                     .onDelete
                     { indexSet in
+                        //消すのはいいんだけど、numをどうにかしないといけないから単純に消せない
                         thisBooks.datas.serieses.remove(atOffsets: indexSet)
-                        //nums.remove(atOffsets: indexSet)
+                        //seriesList.remove(atOffsets: indexSet)
                     }
                 }
             }
