@@ -1,17 +1,22 @@
 import SwiftUI
 
+//シリーズと詳細の追加するための表示部分
 struct DetailSettingView: View
 {
     @State var titleMS:String = ""
-    @State var numMS:String = ""
     @State var messageMS:String = ""
-    @Binding var thisBooks: SeriesData
+    
+    @Binding var thisBooks: SeriesData  //裏で表示されてる、追加しようとしてるシリーズデータ
+    
     @Binding var isPresentShown: Bool
+    
     @State var seriesOrNot: Bool = true
+    
+    //にもらったものを他の人に渡すだけ
     var noNumList: [Int]
     var nums: [Int]
+    
     @State var num: Int = 0
-    @State var reNum: Bool = false
     
     var body: some View
     {
@@ -28,7 +33,6 @@ struct DetailSettingView: View
             HStack
             {
                 Text("タイトル")
-                .foregroundColor(Color(red:0.3, green:0.3, blue:0.3))
                 Spacer()
             }
             TextField("タイトル", text: $titleMS)
@@ -41,7 +45,6 @@ struct DetailSettingView: View
             HStack
             {
                 Text($seriesOrNot.wrappedValue ? "番号" : "内容")
-                .foregroundColor(Color(red:0.3, green:0.3, blue:0.3))
                 Spacer()
             }
             if $seriesOrNot.wrappedValue == true
@@ -65,12 +68,10 @@ struct DetailSettingView: View
                 {
                     if $seriesOrNot.wrappedValue == true
                     {
-                        //num関連
                         thisBooks.datas.serieses.append(SeriesData(title: titleMS, num: num, datas: SeriesesAndDetailsData(serieses: [], details: [])))
                     }
                     else
                     {
-                        //詳細
                         thisBooks.datas.details.append(DetailData(title: titleMS, message: messageMS))
                     }
                     isPresentShown = false

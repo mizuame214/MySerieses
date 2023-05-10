@@ -1,0 +1,40 @@
+MySerieses の作られ方というかなんか
+
+＜AList＞
+：画面のうちのシリーズ部分１個の表示
+　名前、（赤丸、）（デバッグ用シリーズ番号、星？）
+
+bool whetherUncomplete(SeriesData)：持っているシリーズのシリーズ番号に欠けがあるかどうか
+
+＜ContentView＞
+：データのロードと最初の表示
+
+＜DetailSettingView＞
+：シリーズと詳細追加ページの表示とシリーズデータへの追加
+※詳細の内容入力部分を複数行にしたい
+
+＜EditView＞
+：編集モード的な。ここで編集すると元のデータに反映される。
+
+※seriesListをいじっても大元は変わらないかもな？ようわからん
+※変なとこ消えたりする。
+※タイトルとか内容を変えられるようにしたいけどどうやって？
+
+＜FirstView＞
+：表示画面全体
+　仮無い巻の表示、詳細の表示、整頓したシリーズ番号順でシリーズの表示（変更があったら整頓順リストと欠けリストの更新）、編集画面へのボタン、プラスボタン
+※無い巻の表示方法
+※入れ替え（makeSortListで作ったリストで表示すればいけるんじゃ無いかなと思ってるけど、なぜかできない）
+
+[Int] numberSort(SeriesData)：持ってるシリーズの番号を順に整頓する
+[Int] makeNoNumList([Int])：欠けの番号リストを作る
+[SeriesData] makeSortList(SeriesData, [Int])：numberSort順にシリーズリストを作る
+
+＜InfoView＞
+：Detailの表示
+
+＜PlusButton＞
+：表示と、DetailSettingViewを表示する機能
+
+＜SeriesNumPicker＞
+：シリーズ追加の時のピッカー。数字を黒くしたり灰色にしたり。

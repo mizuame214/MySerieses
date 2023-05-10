@@ -3,7 +3,6 @@ import SwiftUI
 struct FirstView: View
 {
     @Binding var thisBooks: SeriesData
-    
     @State var editMode: EditMode = .inactive
     
     //画面に映ってるシリーズのnumたちをappendしてソートする。
@@ -32,10 +31,27 @@ struct FirstView: View
         return fibNoNumList
     }
     
+    func makeSortList(fibData: SeriesData, fibNums: [Int]) -> [SeriesData]
+    {
+        var fibList: [SeriesData] = []
+        for num in fibNums
+        {
+            for series in fibData.datas.serieses
+            {
+                if num == series.num
+                {
+                    fibList.append(series)
+                }
+            }
+        }
+        return fibList
+    }
+    
     var body: some View
     {
         var nums: [Int] = numberSort(fibData: thisBooks)
         var noNumList: [Int] = makeNoNumList(fibNums: nums)
+        var seriesList: [SeriesData] = makeSortList(fibData: thisBooks, fibNums: nums)
         
         ZStack
         {
@@ -60,6 +76,7 @@ struct FirstView: View
                 //シリーズ部分の表示
                 Section
                 {
+                    //※
                     ForEach(nums, id: \.self)
                     { num in
                         ForEach($thisBooks.datas.serieses)
@@ -81,6 +98,7 @@ struct FirstView: View
                     { thisBooks in
                         nums = numberSort(fibData: thisBooks)
                         noNumList = makeNoNumList(fibNums: nums)
+                        seriesList = makeSortList(fibData: thisBooks, fibNums: nums)
                     }
                 }
             }
@@ -91,12 +109,11 @@ struct FirstView: View
                 //SeriesData.clear(path: seriesJsonPath)
             }
             .navigationTitle(thisBooks.title)
-            //.onMoveがEditMode無しで動くならいらないとこ
             .navigationBarItems(trailing:
                 NavigationLink(
                     destination:
                         {
-                            EditView(thisBooks: $thisBooks, isPre: false)
+                            EditView(thisBooks: $thisBooks, seriesList: seriesList, isPre: false)
                         },
                         label:
                         {
@@ -110,3 +127,4 @@ struct FirstView: View
         }
     }
 }
+

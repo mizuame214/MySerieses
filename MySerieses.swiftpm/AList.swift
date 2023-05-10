@@ -1,10 +1,11 @@
 import SwiftUI
 
+//画面のうちのシリーズ部分１個の表示
 struct AList: View
 {
     var data: SeriesData
     
-    //シリーズ番号に抜けがあればtrue、揃っていればfalse
+    //持ってるシリーズに欠けがあればtrue、揃っていればfalse
     func whetherUncomplete(fibData: SeriesData) -> Bool
     {
         let haveSerNum: Int = fibData.datas.serieses.count
@@ -26,7 +27,6 @@ struct AList: View
             {
                 Text(data.title)
                 .font(.system(size:15))
-                //.foregroundColor(Color(.sRGB, red:0.2, green:0.2, blue:0.2, opacity:1.0))
                 .lineLimit(1)
                 
                 if(whetherUncomplete(fibData: data))

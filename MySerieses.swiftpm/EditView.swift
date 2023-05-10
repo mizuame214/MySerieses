@@ -3,6 +3,7 @@ import SwiftUI
 struct EditView: View
 {
     @Binding var thisBooks: SeriesData
+    var seriesList: [SeriesData]
     
     @State var editMode: EditMode = .active
     @State var isPre: Bool
@@ -12,12 +13,19 @@ struct EditView: View
     
     var body: some View
     {
-        var nums: [Int] = FirstView(thisBooks: $thisBooks).numberSort(fibData: thisBooks)
+        //var lists: [SeriesData] = makeSortList(fibData: thisBooks, fibNums: nums)
         
         ZStack
         {
             List
             {
+                if seriesList != []
+                {
+                    //let numStr = seriesList.map {String($0)}
+                    //let text: String = numStr.joined(separator: ", ")
+                    //InfoView(title: "順", mainText: text)
+                }
+                
                 //詳細部分の表示
                 Section
                 {
@@ -38,71 +46,61 @@ struct EditView: View
                     }
                     .onMove
                     { from, to in
-                        thisBooks.datas.details.move(fromOffsets: from, toOffset: to)
+                        //thisBooks.datas.details.move(fromOffsets: from, toOffset: to)
                     }
                     .onDelete
                     { indexSet in
+                        //indexSetが表示されてる順と違うから、消すと一個上とかが消えるんだ
                         thisBooks.datas.details.remove(atOffsets: indexSet)
                     }
                 }
                 //シリーズ部分の表示
                 Section
                 {
-                    ForEach(nums, id: \.self)
-                    { num in
-                        ForEach($thisBooks.datas.serieses)
-                        { series in
-                            if num == series.num.wrappedValue
-                            {
-                                Button( action:
-                                {
-                                    isPre = true
-                                },
-                                label:
-                                {
-                                    AList(data: series.wrappedValue)
-                                })
-                                .sheet(isPresented: $isPre)
-                                {
-                                    //一つ一つリストの編集画面
-                                }
-                            }
+                    ForEach(seriesList)
+                    { series in
+                        Button
+                        {
+                            isPre = true
+                        }
+                        label:
+                        {
+                            AList(data: series)
+                        }
+                        .sheet(isPresented: $isPre)
+                        {
+                            //一つ一つリストの編集画面
                         }
                     }
                     .onMove
                     { from, to in
-                        thisBooks.datas.serieses.move(fromOffsets: from, toOffset: to)
+                        //thisBooks.datas.serieses.move(fromOffsets: from, toOffset: to)
+                        //移動前のシリーズを取得できないぴえ
+                        //thisBooks.datas.serieses[1].num = to
                     }
                     .onDelete
                     { indexSet in
-                        //indexSetより後ろのnumsのシリーズnumを-1
                         thisBooks.datas.serieses.remove(atOffsets: indexSet)
-                    }
-                    .onChange(of: thisBooks)
-                    { thisBooks in
-                        
+                        //nums.remove(atOffsets: indexSet)
                     }
                 }
             }
             .listStyle(.insetGrouped)
             .navigationTitle(thisBooks.title)
-            //.onMoveがEditMode無しで動くならいらないとこ
             .navigationBarBackButtonHidden(true)
-            .toolbar
-            {
-                ToolbarItem(placement: .navigationBarTrailing)
+            .navigationBarItems(trailing:
+                Button( action:
                 {
-                    Button
-                    {
-                        dismiss()
-                    }
-                    label:
-                    {
-                        Image(systemName: "checkmark")
-                    }
-                }
-            }
+                    dismiss()
+                    //ここで再登録？できればいいかもな。消した時はリストから番号を消して、入れ替えは上から順にリストの番号を当てはめていく
+                },
+                label:
+                {
+                    Image(systemName: "checkmark")
+                })
+            )
             .environment(\.editMode, self.$editMode)
+            //*/
         }
     }
 }
