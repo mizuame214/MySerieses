@@ -53,10 +53,9 @@ struct DetailSettingView: View
             }
             else
             {
-                //2行にできないかな？
-                TextField("内容", text : $messageMS)
+                TextEditor(text: $messageMS)
                 .padding(10)
-                .frame(height:60)
+                .frame(height:80)
                 .border(.gray, width:0.5)
                 .padding(.bottom, 20)
             }

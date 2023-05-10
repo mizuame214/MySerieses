@@ -13,7 +13,7 @@ struct EditInfoView: View
             {
                 TextEditor(text: $title)
                 .font(.title2)
-                .frame(maxHeight: 50)
+                .frame(maxHeight: 40)
                 .border(.gray, width:0.5)
                 Spacer()
             }
@@ -21,7 +21,7 @@ struct EditInfoView: View
             {
                 TextEditor(text: $mainText)
                 .border(.gray, width:0.5)
-                .frame(maxHeight: 150)
+                .frame(maxHeight: 60)
                 Spacer()
             }
             .padding(.leading,25)

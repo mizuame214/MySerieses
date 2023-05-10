@@ -35,15 +35,15 @@ struct SeriesNumPicker: View
     {
         Picker("番号", selection: $num)
         {
-            let numMinusTwo: Int = num-2 > 0 ? num-2 : 1
-            ForEach(numMinusTwo ... num+2, id:\.self)
+            let numMinusTwo: Int = num-3 > 0 ? num-3 : 1
+            ForEach(numMinusTwo ... num+3, id:\.self)
             { i in
                 Text(String(i))
                 .foregroundColor(blackOrGray(fibI: i))
             }
         }
         .pickerStyle(.wheel)
-        .frame(height: 80)
+        .frame(height: 100)
         //抜けリストの一番最初 or あるシリーズ番号の次 or 1
         .onAppear()
         {
