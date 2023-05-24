@@ -17,6 +17,7 @@ struct FirstView: View
         return fibNums
     }
     
+    //いらなくなったからなんとかする
     func makeNoNumList(fibNums: [Int]) -> [Int]
     {
         var fibNoNumList: [Int] = []
@@ -31,33 +32,16 @@ struct FirstView: View
         return fibNoNumList
     }
     
-    func makeSortList(fibData: SeriesData, fibNums: [Int]) -> [SeriesData]
-    {
-        var fibList: [SeriesData] = []
-        for num in fibNums
-        {
-            for series in fibData.datas.serieses
-            {
-                if num == series.num
-                {
-                    fibList.append(series)
-                }
-            }
-        }
-        return fibList
-    }
-    
     var body: some View
     {
         var nums: [Int] = numberSort(fibData: thisBooks)
         var noNumList: [Int] = makeNoNumList(fibNums: nums)
-        var seriesList = makeSortList(fibData: thisBooks, fibNums: nums)
         
         ZStack
         {
             List
             {
-                //無い巻の表示どうしよう
+                //※無い巻の表示どうしよう
                 if noNumList != []
                 {
                     let noNumStr = noNumList.map {String($0)}
@@ -76,24 +60,18 @@ struct FirstView: View
                 //シリーズ部分の表示
                 Section
                 {
-                    //※
-                    ForEach(nums, id: \.self)
-                    { num in
-                        ForEach($thisBooks.datas.serieses)
-                        { series in
-                            if num == series.num.wrappedValue
-                            {
-                                NavigationLink( destination:
-                                {
-                                    FirstView(thisBooks: series)
-                                },
-                                label:
-                                {
-                                    AList(data: series.wrappedValue)
-                                })
-                            }
-                        }
+                    ForEach($thisBooks.datas.serieses)
+                    { series in
+                        NavigationLink( destination:
+                        {
+                            FirstView(thisBooks: series)
+                        },
+                        label:
+                        {
+                            AList(data: series.wrappedValue)
+                        })
                     }
+                    
                 }
             }
             .listStyle(.insetGrouped)
@@ -104,16 +82,20 @@ struct FirstView: View
             }
             .onChange(of: thisBooks)
             { thisBooks in
+                //なんとかする
                 nums = numberSort(fibData: thisBooks)
                 noNumList = makeNoNumList(fibNums: nums)
-                seriesList = makeSortList(fibData: thisBooks, fibNums: nums)
+                
+                self.thisBooks.datas.serieses = thisBooks.datas.serieses.sorted { $0.num < $1.num }
             }
             .navigationTitle(thisBooks.title)
+            
+            //編集モード用
             .navigationBarItems(trailing:
                 NavigationLink(
                     destination:
                         {
-                            EditView(thisBooks: $thisBooks, seriesList: seriesList, isPre: false)
+                            EditView(thisBooks: $thisBooks, isPre: false)
                         },
                         label:
                         {

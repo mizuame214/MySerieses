@@ -16,8 +16,8 @@ bool whetherUncomplete(SeriesData)：持っているシリーズのシリーズ�
 ＜EditView＞
 ：編集モード的な。ここで編集すると元のデータに反映される。
 
-※seriesListをいじっても大元は変わらないかもな？ようわからん
-※変なとこ消えたりする。
+☑︎seriesListをいじっても大元は変わらないかもな？ようわからん
+☑︎変なとこ消えたりする。
 ※タイトルとか内容を変えられるようにしたいけどどうやって？
 
 ＜FirstView＞
@@ -28,7 +28,6 @@ bool whetherUncomplete(SeriesData)：持っているシリーズのシリーズ�
 
 [Int] numberSort(SeriesData)：持ってるシリーズの番号を順に整頓する
 [Int] makeNoNumList([Int])：欠けの番号リストを作る
-[SeriesData] makeSortList(SeriesData, [Int])：numberSort順にシリーズリストを作る
 
 ＜InfoView＞
 ：Detailの表示
@@ -38,3 +37,9 @@ bool whetherUncomplete(SeriesData)：持っているシリーズのシリーズ�
 
 ＜SeriesNumPicker＞
 ：シリーズ追加の時のピッカー。数字を黒くしたり灰色にしたり。
+
+
+
+
+
+thisBooks.datas.serieses = thisBooks.datas.serieses.sorted { $0.num < $1.num }
