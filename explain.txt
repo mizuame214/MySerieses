@@ -24,7 +24,7 @@ bool whetherUncomplete(SeriesData)：持っているシリーズのシリーズ�
 ：表示画面全体
 　仮無い巻の表示、詳細の表示、整頓したシリーズ番号順でシリーズの表示（変更があったら整頓順リストと欠けリストの更新）、編集画面へのボタン、プラスボタン
 ※無い巻の表示方法
-※入れ替え（makeSortListで作ったリストで表示すればいけるんじゃ無いかなと思ってるけど、なぜかできない）
+☑︎入れ替え（makeSortListで作ったリストで表示すればいけるんじゃ無いかなと思ってるけど、なぜかできない）：Bindingじゃないって怒られる
 
 [Int] numberSort(SeriesData)：持ってるシリーズの番号を順に整頓する
 [Int] makeNoNumList([Int])：欠けの番号リストを作る
@@ -43,3 +43,8 @@ bool whetherUncomplete(SeriesData)：持っているシリーズのシリーズ�
 
 
 thisBooks.datas.serieses = thisBooks.datas.serieses.sorted { $0.num < $1.num }
+
+
+
+
+AList(data: SeriesData(title: "持ってない", num: num, datas: SeriesesAndDetailsData(serieses: [], details: [])))

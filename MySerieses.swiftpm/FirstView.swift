@@ -17,7 +17,6 @@ struct FirstView: View
         return fibNums
     }
     
-    //いらなくなったからなんとかする
     func makeNoNumList(fibNums: [Int]) -> [Int]
     {
         var fibNoNumList: [Int] = []
@@ -82,7 +81,6 @@ struct FirstView: View
             }
             .onChange(of: thisBooks)
             { thisBooks in
-                //なんとかする
                 nums = numberSort(fibData: thisBooks)
                 noNumList = makeNoNumList(fibNums: nums)
                 
@@ -95,7 +93,7 @@ struct FirstView: View
                 NavigationLink(
                     destination:
                         {
-                            EditView(thisBooks: $thisBooks, isPre: false)
+                            EditView(thisBooks: $thisBooks, isPre: false, noNumList: noNumList)
                         },
                         label:
                         {

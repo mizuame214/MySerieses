@@ -6,12 +6,22 @@ struct EditView: View
     
     @State var editMode: EditMode = .active
     @State var isPre: Bool
+    var noNumList: [Int]
     
     //戻るボタンのカスタム
     @Environment(\.dismiss) var dismiss
     
+    func makeAllList(fibData: SeriesData) -> [Int]
+    {
+        let max = fibData.datas.serieses[fibData.datas.serieses.count - 1].num
+        let nums: [Int] = Array(1...max+1)
+        return nums
+    }
+    
     var body: some View
     {
+        let allList: [Int] = makeAllList(fibData: thisBooks)
+        
         ZStack
         {
             List
@@ -36,27 +46,40 @@ struct EditView: View
                 //シリーズ部分の表示
                 Section
                 {
-                    ForEach($thisBooks.datas.serieses)
-                    { series in
-                        Button
-                        {
-                            isPre = true
+                    ForEach(allList, id: \.self)
+                    { num in
+                        ForEach($thisBooks.datas.serieses)
+                        { series in
+                            if(series.num.wrappedValue == num)
+                            {
+                                //fibSeriesData.append(series)
+                                Button
+                                {
+                                    isPre = true
+                                }
+                                label:
+                                {
+                                    AList(data: series.wrappedValue)
+                                }
+                                .sheet(isPresented: $isPre)
+                                {
+                                    //一つ一つリストの編集画面
+                                }
+                            }
                         }
-                        label:
-                        {
-                            AList(data: series.wrappedValue)
-                        }
-                        .sheet(isPresented: $isPre)
-                        {
-                            //一つ一つリストの編集画面
+                        //苦肉の策な気はする
+                        ForEach(noNumList, id: \.self)
+                        { noNum in
+                            if(noNum == num)
+                            {
+                                AList(data: SeriesData(title: "持ってない", num: num, datas: SeriesesAndDetailsData(serieses: [], details: [])))
+                            }
                         }
                     }
                     .onMove
                     { from, to in
-                        //まだ無理
                         thisBooks.datas.serieses.move(fromOffsets: from, toOffset: to)
-                        //移動前のシリーズを取得できないぴえ
-                        thisBooks.datas.serieses[1].num = to
+                        //上から順にnumをallListにする
                     }
                     .onDelete
                     { indexSet in
