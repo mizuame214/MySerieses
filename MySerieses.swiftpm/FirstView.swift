@@ -93,7 +93,7 @@ struct FirstView: View
                 NavigationLink(
                     destination:
                         {
-                            EditView(thisBooks: $thisBooks, isPre: false, noNumList: noNumList)
+                            EditView(thisBooks: $thisBooks, isPre: false)
                         },
                         label:
                         {
