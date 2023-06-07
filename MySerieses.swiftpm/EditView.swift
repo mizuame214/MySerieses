@@ -17,7 +17,7 @@ struct EditView: View
         return nums
     }
     
-    func appendNoBooks(fibData: Binding<SeriesData>, allList: [Int]) -> [Binding<SeriesData>]
+    func makeAllSeriesesList(fibData: Binding<SeriesData>, allList: [Int]) -> [Binding<SeriesData>]
     {
         var fibAllList: [Binding<SeriesData>] = []
         for i in allList
@@ -33,7 +33,7 @@ struct EditView: View
             }
             if(exit == false)
             {
-                @State var noSeries: SeriesData = SeriesData(title: "持ってない", num: i, datas: SeriesesAndDetailsData(serieses: [], details: []))
+                @State var noSeries: SeriesData = SeriesData(title: "持ってないよ", num: i, datas: SeriesesAndDetailsData(serieses: [], details: []))
                 fibAllList.append($noSeries)
             }
         }
@@ -52,8 +52,9 @@ struct EditView: View
     
     var body: some View
     {
-        let allNumList: [Int] = makeAllNumList(fibData: thisBooks)
-        var allSerieses: [Binding<SeriesData>] = appendNoBooks(fibData: $thisBooks, allList: allNumList)
+        var allNumList: [Int] = makeAllNumList(fibData: thisBooks)
+        var allSerieses: [Binding<SeriesData>] = makeAllSeriesesList(fibData: $thisBooks, allList: allNumList)
+        var seriesNum: Int = thisBooks.datas.serieses.count
         
         ZStack
         {
@@ -101,7 +102,20 @@ struct EditView: View
                     }
                     .onDelete
                     { indexSet in
+                        //持ってるシリーズ消すと重複したシリーズが何故か増えたりすることがあるなんとかして。持ってるシリーズ消したらそのシリーズが空のデータになるようにしておきたい。勝手に詰めないで欲しい。
+                        //for series in thisBooks.datas.serieses
+                        //{
+                            //if(series.num == allSerieses[indexSet].num.wrappedValue)
+                            //{
+                        //thisBooks.datas.serieses.
+                            //}
+                            //else
+                            //{
                         allSerieses.remove(atOffsets: indexSet)
+                        
+                            //}
+                        //}
+                        allSerieses = makeAllSeriesesList(fibData: $thisBooks, allList: allNumList)
                         adjustSeriesesNum(fibAllSerieses: allSerieses)
                     }
                 }

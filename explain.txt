@@ -20,6 +20,10 @@ bool whetherUncomplete(SeriesData)：持っているシリーズのシリーズ�
 ☑︎変なとこ消えたりする。
 ※タイトルとか内容を変えられるようにしたいけどどうやって？
 
+[Int] makeAllNumList(SeriesData)：1〜最終巻+1の配列を作る
+[Binding<SeriesData>] makeAllSeriesesList($SeriesData, [Int])：持ってればそれ、持ってなければi巻のデータを作って配列を作る
+[void] adjustSeriesesNum($SeriesData)：配列の上から順に.numの番号を変えていく
+
 ＜FirstView＞
 ：表示画面全体
 　仮無い巻の表示、詳細の表示、整頓したシリーズ番号順でシリーズの表示（変更があったら整頓順リストと欠けリストの更新）、編集画面へのボタン、プラスボタン
