@@ -5,6 +5,9 @@ struct FirstView: View
     @Binding var thisBooks: SeriesData
     @State var editMode: EditMode = .inactive
     
+    //苦し紛れ
+    @State var fibDetailData: DetailData = DetailData(title: "", message: "")
+    
     //画面に映ってるシリーズのnumたちをappendしてソートする。
     func numberSort(fibData: SeriesData) -> [Int]
     {
@@ -93,7 +96,7 @@ struct FirstView: View
                 NavigationLink(
                     destination:
                         {
-                            EditView(thisBooks: $thisBooks, isPre: false)
+                            EditView(thisBooks: $thisBooks, detailData: $fibDetailData)
                         },
                         label:
                         {

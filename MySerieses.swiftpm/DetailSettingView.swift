@@ -49,6 +49,7 @@ struct DetailSettingView: View
             }
             if $seriesOrNot.wrappedValue == true
             {
+                //灰色の時は追加できないようにしたい。
                 SeriesNumPicker(noNumList: noNumList, nums: nums, num: $num)
             }
             else

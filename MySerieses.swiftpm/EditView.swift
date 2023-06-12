@@ -5,7 +5,10 @@ struct EditView: View
     @Binding var thisBooks: SeriesData
     
     @State var editMode: EditMode = .active
-    @State var isPre: Bool
+    @State var isPreDet: Bool = false
+    @State var isPreSer: Bool = false
+    
+    @State var detailData: Binding<DetailData>
     
     //戻るボタンのカスタム
     @Environment(\.dismiss) var dismiss
@@ -54,7 +57,6 @@ struct EditView: View
     {
         var allNumList: [Int] = makeAllNumList(fibData: thisBooks)
         var allSerieses: [Binding<SeriesData>] = makeAllSeriesesList(fibData: $thisBooks, allList: allNumList)
-        var seriesNum: Int = thisBooks.datas.serieses.count
         
         ZStack
         {
@@ -65,8 +67,16 @@ struct EditView: View
                 {
                     ForEach($thisBooks.datas.details)
                     { detail in
-                        //ちょっと表示方法ダサいかも
-                        EditInfoView(title: detail.title, mainText: detail.message)
+                        Button
+                        {
+                            detailData = detail
+                            isPreDet = true
+                        }
+                        label:
+                        {
+                            InfoView(title: detail.title.wrappedValue, mainText: detail.message.wrappedValue)
+                            .foregroundColor(.black)
+                        }
                     }
                     .onMove
                     { from, to in
@@ -76,7 +86,12 @@ struct EditView: View
                     { indexSet in
                         thisBooks.datas.details.remove(atOffsets: indexSet)
                     }
+                    .sheet(isPresented: $isPreDet)
+                    {
+                        EditDetailSettingView(detail: detailData, isPresentShown: $isPreDet)
+                    }
                 }
+                
                 //シリーズ部分の表示
                 Section
                 {
@@ -84,21 +99,23 @@ struct EditView: View
                     { series in
                         Button
                         {
-                            isPre = true
+                            isPreSer = true
                         }
                         label:
                         {
                             AList(data: series.wrappedValue)
+                            .foregroundColor(.black)
                         }
-                        .sheet(isPresented: $isPre)
+                        .sheet(isPresented: $isPreSer)
                         {
-                            //一つ一つリストの編集画面
+                            EditSeriesSettingView(series: series, isPresentShown: $isPreSer)
                         }
                     }
                     .onMove
                     { from, to in
                         allSerieses.move(fromOffsets: from, toOffset: to)
                         adjustSeriesesNum(fibAllSerieses: allSerieses)
+                        allNumList = makeAllNumList(fibData: thisBooks)
                     }
                     .onDelete
                     { indexSet in
@@ -117,6 +134,7 @@ struct EditView: View
                         //}
                         allSerieses = makeAllSeriesesList(fibData: $thisBooks, allList: allNumList)
                         adjustSeriesesNum(fibAllSerieses: allSerieses)
+                        allNumList = makeAllNumList(fibData: thisBooks)
                     }
                 }
             }
