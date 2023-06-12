@@ -8,7 +8,10 @@ struct EditView: View
     @State var isPreDet: Bool = false
     @State var isPreSer: Bool = false
     
+    var noNumList: [Int]
+    
     @State var detailData: Binding<DetailData>
+    @State var seriesData: Binding<SeriesData>
     
     //戻るボタンのカスタム
     @Environment(\.dismiss) var dismiss
@@ -55,6 +58,7 @@ struct EditView: View
     
     var body: some View
     {
+        //Stateじゃ無いとちゃんと動かないのでは？
         var allNumList: [Int] = makeAllNumList(fibData: thisBooks)
         var allSerieses: [Binding<SeriesData>] = makeAllSeriesesList(fibData: $thisBooks, allList: allNumList)
         
@@ -99,16 +103,13 @@ struct EditView: View
                     { series in
                         Button
                         {
+                            seriesData = series
                             isPreSer = true
                         }
                         label:
                         {
                             AList(data: series.wrappedValue)
                             .foregroundColor(.black)
-                        }
-                        .sheet(isPresented: $isPreSer)
-                        {
-                            EditSeriesSettingView(series: series, isPresentShown: $isPreSer)
                         }
                     }
                     .onMove
@@ -120,21 +121,16 @@ struct EditView: View
                     .onDelete
                     { indexSet in
                         //持ってるシリーズ消すと重複したシリーズが何故か増えたりすることがあるなんとかして。持ってるシリーズ消したらそのシリーズが空のデータになるようにしておきたい。勝手に詰めないで欲しい。
-                        //for series in thisBooks.datas.serieses
-                        //{
-                            //if(series.num == allSerieses[indexSet].num.wrappedValue)
-                            //{
-                        //thisBooks.datas.serieses.
-                            //}
-                            //else
-                            //{
-                        allSerieses.remove(atOffsets: indexSet)
+                        //もし持ってるシリーズなら、持ってないシリーズなら
+                        //メモ
+                        //self.thisBooks.datas.serieses = thisBooks.datas.serieses.sorted { $0.num < $1.num }
                         
-                            //}
-                        //}
-                        allSerieses = makeAllSeriesesList(fibData: $thisBooks, allList: allNumList)
-                        adjustSeriesesNum(fibAllSerieses: allSerieses)
-                        allNumList = makeAllNumList(fibData: thisBooks)
+                        //indexSetがnumと対応してないから、消すと変なとこが消えちゃう
+                    }
+                    .sheet(isPresented: $isPreSer)
+                    {
+                        //noNumListをあげたい
+                        EditSeriesSettingView(thisBooks: $thisBooks, series: seriesData, isPresentShown: $isPreSer)
                     }
                 }
             }

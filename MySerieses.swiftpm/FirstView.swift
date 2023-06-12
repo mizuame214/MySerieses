@@ -6,7 +6,8 @@ struct FirstView: View
     @State var editMode: EditMode = .inactive
     
     //苦し紛れ
-    @State var fibDetailData: DetailData = DetailData(title: "", message: "")
+    @State var fibDetailData: DetailData = DetailData(title: "仮", message: "仮")
+    @State var fibSeriesData: SeriesData = SeriesData(title: "仮", num: 0, datas: SeriesesAndDetailsData(serieses: [], details: []))
     
     //画面に映ってるシリーズのnumたちをappendしてソートする。
     func numberSort(fibData: SeriesData) -> [Int]
@@ -43,14 +44,14 @@ struct FirstView: View
         {
             List
             {
-                //※無い巻の表示どうしよう
+                //※無い巻の表示、ここではせずに、編集画面行ったら見れればいいと思えてきた。
                 if noNumList != []
                 {
                     let noNumStr = noNumList.map {String($0)}
                     let text: String = noNumStr.joined(separator: ", ")
                     InfoView(title: "無い巻", mainText: text)
                 }
-                
+
                 //詳細部分の表示
                 Section
                 {
@@ -96,7 +97,7 @@ struct FirstView: View
                 NavigationLink(
                     destination:
                         {
-                            EditView(thisBooks: $thisBooks, detailData: $fibDetailData)
+                            EditView(thisBooks: $thisBooks, noNumList: noNumList, detailData: $fibDetailData, seriesData: $fibSeriesData)
                         },
                         label:
                         {

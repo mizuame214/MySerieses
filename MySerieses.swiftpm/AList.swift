@@ -4,7 +4,9 @@ import SwiftUI
 struct AList: View
 {
     var data: SeriesData
+    var exit: Bool = true
     
+    //noNumListがあるかどうかじゃんリファクタしたい
     //持ってるシリーズに欠けがあればtrue、揃っていればfalse
     func whetherUncomplete(fibData: SeriesData) -> Bool
     {
