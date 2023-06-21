@@ -12,16 +12,15 @@ struct DetailSettingView: View
     
     @State var seriesOrNot: Bool = true
     
-    //にもらったものを他の人に渡すだけ
-    var noNumList: [Int]
-    var nums: [Int]
-    
     @State var num: Int = 0
     
     @State var exit: Bool = false
     
     var body: some View
     {
+        let nums = numberSort(fibData: thisBooks)
+        let noNumList = makeNoNumList(fibNums: nums, plus: false)
+        
         VStack
         {
             Picker("シリーズか詳細か", selection: $seriesOrNot)

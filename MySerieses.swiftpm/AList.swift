@@ -4,51 +4,37 @@ import SwiftUI
 struct AList: View
 {
     var data: SeriesData
-    var exit: Bool = true
-    
-    //noNumListがあるかどうかじゃんリファクタしたい
-    //持ってるシリーズに欠けがあればtrue、揃っていればfalse
-    func whetherUncomplete(fibData: SeriesData) -> Bool
-    {
-        let haveSerNum: Int = fibData.datas.serieses.count
-        for ser in fibData.datas.serieses
-        {
-            if haveSerNum < ser.num
-            {
-                return true
-            }
-        }
-        return false
-    }
+    var edit: Bool
     
     var body: some View
     {
+        let nums = numberSort(fibData: data)
+        let noNumList = makeNoNumList(fibNums: nums, plus: false)
+        
         VStack
         {
             HStack
             {
+                if(edit)
+                {
+                    //巻数の表示
+                    Text(String(data.num))
+                    .font(.system(size:15))
+                    .foregroundColor(Color(.sRGB, red:1.0, green:0.2, blue:0.2, opacity:1.0))
+                    .padding(.trailing, 10)
+                }
+                
                 Text(data.title)
                 .font(.system(size:15))
                 .lineLimit(1)
                 
-                if(whetherUncomplete(fibData: data))
+                if(noNumList != [] && edit == false)
                 {
                     Circle()
                     .foregroundColor(.pink)
                     .frame(width: 15, height: 15, alignment: .leading)
                     .padding(.horizontal, 2)
                 }
-                
-                Spacer()
-                
-                //デバッグ用シリーズ番号の表示
-                Text(String(data.num))
-                .font(.system(size:15))
-                .foregroundColor(Color(.sRGB, red:1.0, green:0.2, blue:0.2, opacity:1.0))
-                
-                //星要らなくね?
-                //Image(systemName: "star.fill")
-                //.foregroundColor(.yellow)
             }
         }
         .padding(.vertical, 15)

@@ -14,6 +14,9 @@ struct EditSeriesSettingView: View
     
     var body: some View
     {
+        let nums = numberSort(fibData: thisBooks)
+        let noNumList = makeNoNumList(fibNums: nums, plus: true)
+        
         VStack
         {
             HStack
@@ -23,14 +26,16 @@ struct EditSeriesSettingView: View
             }
             .onAppear
             {
-                //持ってないよ　っていうシリーズが作れなくなっちゃうから、条件変えたい
-                //noNumListにあったらたしかfor使えたよねこの中
-                if(series.title == "持ってないよ")
+                for no in noNumList
                 {
-                    exit = false
-                    textFieldText = "持ってないよ"
+                    if(series.num == no)
+                    {
+                        exit = false
+                        textFieldText = "持ってないよ"
+                        break
+                    }
                 }
-                else
+                if(exit)
                 {
                     fibTitle = series.title
                 }
@@ -41,7 +46,7 @@ struct EditSeriesSettingView: View
             .border(.gray, width:0.5)
             .padding(.bottom, 15)
             
-            //作成ボタン
+            //更新作成ボタン
             HStack
             {
                 Button
@@ -65,8 +70,7 @@ struct EditSeriesSettingView: View
                         .foregroundColor(.teal)
                         .shadow(radius: 3)
                         .padding(.vertical, 25)
-                        //あとで「更新」だけにする。
-                        Text(exit ? "シリーズ更新" : "作成")
+                        Text(exit ? "更新" : "作成")
                         .font(.title2)
                         .foregroundColor(.white)
                     }

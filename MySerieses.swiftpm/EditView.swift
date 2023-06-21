@@ -46,7 +46,7 @@ struct EditView: View
             }
             if(exit == false)
             {
-                @State var noSeries: SeriesData = SeriesData(title: "持ってないよ", num: i, datas: SeriesesAndDetailsData(serieses: [], details: []))
+                @State var noSeries: SeriesData = SeriesData(title: "-------------------------", num: i, datas: SeriesesAndDetailsData(serieses: [], details: []))
                 fibAllList.append($noSeries)
             }
         }
@@ -65,10 +65,21 @@ struct EditView: View
     
     var body: some View
     {
+        let nums = numberSort(fibData: thisBooks)
+        let noNumList = makeNoNumList(fibNums: nums, plus: false)
+        
         ZStack
         {
             List
             {
+                //無い巻の表示
+                if noNumList != []
+                {
+                    let noNumStr = noNumList.map {String($0)}
+                    let text: String = noNumStr.joined(separator: ", ")
+                    InfoView(title: "無い巻", mainText: text)
+                }
+                
                 //詳細部分の表示
                 Section
                 {
@@ -111,7 +122,7 @@ struct EditView: View
                         }
                         label:
                         {
-                            AList(data: series.wrappedValue)
+                            AList(data: series.wrappedValue, edit: true)
                             .foregroundColor(.black)
                         }
                     }
@@ -146,7 +157,6 @@ struct EditView: View
                     }
                     .sheet(isPresented: $isPreSer)
                     {
-                        //noNumListをあげたいかも
                         EditSeriesSettingView(thisBooks: $thisBooks, series: seriesData, isPresentShown: $isPreSer)
                     }
                 }

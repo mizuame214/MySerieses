@@ -5,8 +5,6 @@ struct PlusButton: View
     @State var isPresentShown:Bool = false
     //今表示されてるシリーズデータ
     @Binding var thisBooks: SeriesData
-    var noNumList: [Int]
-    var nums: [Int]
     
     var body: some View
     {
@@ -36,7 +34,7 @@ struct PlusButton: View
                 }
                 .sheet(isPresented: $isPresentShown)
                 {
-                    DetailSettingView(thisBooks: $thisBooks, isPresentShown: $isPresentShown, noNumList: noNumList, nums: nums)
+                    DetailSettingView(thisBooks: $thisBooks, isPresentShown: $isPresentShown)
                 }
             }
             .padding()

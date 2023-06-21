@@ -9,50 +9,12 @@ struct FirstView: View
     @State var fibDetailData: DetailData = DetailData(title: "仮", message: "仮")
     @State var fibSeriesData: SeriesData = SeriesData(title: "仮", num: 0, datas: SeriesesAndDetailsData(serieses: [], details: []))
     
-    @State var noNumList: [Int] = []
-    
-    //画面に映ってるシリーズのnumたちをappendしてソートする。
-    func numberSort(fibData: SeriesData) -> [Int]
-    {
-        var fibNums: [Int] = []
-        for series in fibData.datas.serieses
-        {
-            fibNums.append(series.num)
-        }
-        fibNums.sort{$0 < $1}
-        return fibNums
-    }
-    
-    func makeNoNumList(fibNums: [Int]) -> [Int]
-    {
-        var fibNoNumList: [Int] = []
-        if fibNums != []
-        {
-            //1~最終巻のIntリストから実際にあるリストを引く。
-            fibNoNumList = Array(1...fibNums[fibNums.count - 1]).filter
-            {
-                v in return !fibNums.contains(v)
-            }
-        }
-        return fibNoNumList
-    }
-    
     var body: some View
     {
-        var nums: [Int] = numberSort(fibData: thisBooks)
-        
         ZStack
         {
             List
             {
-                //※無い巻の表示、ここではせずに、編集画面行ったら見れればいいと思えてきた。
-                if noNumList != []
-                {
-                    let noNumStr = noNumList.map {String($0)}
-                    let text: String = noNumStr.joined(separator: ", ")
-                    InfoView(title: "無い巻", mainText: text)
-                }
-
                 //詳細部分の表示
                 Section
                 {
@@ -72,7 +34,7 @@ struct FirstView: View
                         },
                         label:
                         {
-                            AList(data: series.wrappedValue)
+                            AList(data: series.wrappedValue, edit: false)
                         })
                     }
                     
@@ -83,13 +45,9 @@ struct FirstView: View
             {
                 //データ削除
                 //SeriesData.clear(path: seriesJsonPath)
-                noNumList = makeNoNumList(fibNums: nums)
             }
             .onChange(of: thisBooks)
             { thisBooks in
-                nums = numberSort(fibData: thisBooks)
-                noNumList = makeNoNumList(fibNums: nums)
-                
                 self.thisBooks.datas.serieses = thisBooks.datas.serieses.sorted { $0.num < $1.num }
             }
             .navigationTitle(thisBooks.title)
@@ -109,7 +67,7 @@ struct FirstView: View
             )
             .environment(\.editMode, self.$editMode)
             
-            PlusButton(thisBooks: $thisBooks, noNumList: noNumList, nums: nums)
+            PlusButton(thisBooks: $thisBooks)
         }
     }
 }

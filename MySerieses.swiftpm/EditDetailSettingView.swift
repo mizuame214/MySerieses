@@ -39,7 +39,7 @@ struct EditDetailSettingView: View
             .border(.gray, width:0.5)
             .padding(.bottom, 20)
             
-            //作成ボタン
+            //更新ボタン
             HStack
             {
                 Button
@@ -56,8 +56,7 @@ struct EditDetailSettingView: View
                         .foregroundColor(.teal)
                         .shadow(radius: 3)
                         .padding(.vertical, 25)
-                        //あとで「更新」だけにする。
-                        Text("詳細更新")
+                        Text("更新")
                         .font(.title2)
                         .foregroundColor(.white)
                     }

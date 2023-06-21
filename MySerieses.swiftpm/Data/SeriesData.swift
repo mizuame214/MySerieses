@@ -3,7 +3,7 @@ import Foundation
 struct SeriesData : Identifiable, Codable, Equatable
 {
     var id: String = UUID().uuidString
-    var title:String
+    var title: String
     var num: Int
     var datas: SeriesesAndDetailsData
     
