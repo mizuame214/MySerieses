@@ -2,8 +2,8 @@ import SwiftUI
 
 struct SeriesNumPicker: View
 {
-    var noNumList: [Int]
-    var nums: [Int]
+    let noNumList: [Int]
+    let nums: [Int]
     @Binding var num: Int
     
     //ピッカーの文字色を決める（あるシリーズ番号は灰色）

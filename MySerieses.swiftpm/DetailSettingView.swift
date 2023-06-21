@@ -11,15 +11,13 @@ struct DetailSettingView: View
     @Binding var isPresentShown: Bool
     
     @State var seriesOrNot: Bool = true
-    
     @State var num: Int = 0
-    
     @State var exit: Bool = false
     
     var body: some View
     {
         let nums = numberSort(fibData: thisBooks)
-        let noNumList = makeNoNumList(fibNums: nums, plus: false)
+        let noNumList = makeNoNumList(fibData: thisBooks, plus: false)
         
         VStack
         {
@@ -84,14 +82,8 @@ struct DetailSettingView: View
                 {
                     ZStack
                     {
-                        RoundedRectangle(cornerRadius:8)
-                        .frame(maxWidth:200, maxHeight:60)
+                        DicisionButtonView(text: $seriesOrNot.wrappedValue ? "シリーズ作成" : "詳細作成")
                         .foregroundColor(exit ? $seriesOrNot.wrappedValue ? Color(red: 0.8, green: 0.8, blue: 0.8) : .teal : .teal)
-                        .shadow(radius: 3)
-                        .padding(.vertical, 25)
-                        Text($seriesOrNot.wrappedValue ? "シリーズ作成" : "詳細作成")
-                        .font(.title2)
-                        .foregroundColor(.white)
                     }
                 }
             }

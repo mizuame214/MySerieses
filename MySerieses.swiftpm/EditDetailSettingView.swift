@@ -51,14 +51,8 @@ struct EditDetailSettingView: View
                 {
                     ZStack
                     {
-                        RoundedRectangle(cornerRadius:8)
-                        .frame(maxWidth:200, maxHeight:60)
+                        DicisionButtonView(text: "更新")
                         .foregroundColor(.teal)
-                        .shadow(radius: 3)
-                        .padding(.vertical, 25)
-                        Text("更新")
-                        .font(.title2)
-                        .foregroundColor(.white)
                     }
                 }
             }

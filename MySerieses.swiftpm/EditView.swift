@@ -13,6 +13,15 @@ struct EditView: View
     @State var allNumList: [Int] = []
     @State var allSerieses: [Binding<SeriesData>] = []
     
+    @State var nums: [Int] = []
+    @State var noNumList: [Int] = []
+    
+    
+    
+    //なんでかわからんが、Editで追加した後、ある最後のシリーズを編集しようとすると壊れるようになった
+    
+    
+    
     //戻るボタンのカスタム
     @Environment(\.dismiss) var dismiss
     
@@ -27,7 +36,7 @@ struct EditView: View
         return nums
     }
 
-    func makeAllSeriesesList(fibData: Binding<SeriesData>, allList: [Int]) -> [Binding<SeriesData>]
+    func makeAllSeriesesList(allList: [Int], fibData: Binding<SeriesData>) -> [Binding<SeriesData>]
     {
         var fibAllList: [Binding<SeriesData>] = []
         for i in allList
@@ -41,6 +50,7 @@ struct EditView: View
                     {
                         fibAllList.append(series)
                         exit = true
+                        break
                     }
                 }
             }
@@ -65,9 +75,6 @@ struct EditView: View
     
     var body: some View
     {
-        let nums = numberSort(fibData: thisBooks)
-        let noNumList = makeNoNumList(fibNums: nums, plus: false)
-        
         ZStack
         {
             List
@@ -130,6 +137,8 @@ struct EditView: View
                     { from, to in
                         allSerieses.move(fromOffsets: from, toOffset: to)
                         adjustSeriesesNum(fibAllSerieses: allSerieses)
+                        allNumList = makeAllNumList(fibData: thisBooks)
+                        allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
                     }
                     .onDelete
                     { indexSet in
@@ -146,14 +155,14 @@ struct EditView: View
                             if(ser.num.wrappedValue == removeNum[0])
                             {
                                 thisBooks.datas.serieses.removeAll(where: {$0 == ser.wrappedValue})
-                                allNumList = fibAll
-                                allSerieses = makeAllSeriesesList(fibData: $thisBooks, allList: allNumList)
+                                allNumList = makeAllNumList(fibData: thisBooks)
+                                allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
                                 break
                             }
                         }
-                        allNumList = makeAllNumList(fibData: thisBooks)
-                        allSerieses = makeAllSeriesesList(fibData: $thisBooks, allList: allNumList)
                         adjustSeriesesNum(fibAllSerieses: allSerieses)
+                        allNumList = makeAllNumList(fibData: thisBooks)
+                        allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
                     }
                     .sheet(isPresented: $isPreSer)
                     {
@@ -164,7 +173,8 @@ struct EditView: View
             .onAppear
             {
                 allNumList = makeAllNumList(fibData: thisBooks)
-                allSerieses = makeAllSeriesesList(fibData: $thisBooks, allList: allNumList)
+                allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
+                noNumList = makeNoNumList(fibData: thisBooks, plus: false)
             }
             .listStyle(.insetGrouped)
             .navigationTitle(thisBooks.title)
@@ -183,8 +193,9 @@ struct EditView: View
         }
         .onChange(of: thisBooks)
         { thisBooks in
+            noNumList = makeNoNumList(fibData: thisBooks, plus: false)
             allNumList = makeAllNumList(fibData: thisBooks)
-            allSerieses = makeAllSeriesesList(fibData: $thisBooks, allList: allNumList)
+            allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
         }
     }
 }

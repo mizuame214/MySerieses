@@ -3,13 +3,12 @@ import SwiftUI
 //画面のうちのシリーズ部分１個の表示
 struct AList: View
 {
-    var data: SeriesData
-    var edit: Bool
+    let data: SeriesData
+    let edit: Bool
     
     var body: some View
     {
-        let nums = numberSort(fibData: data)
-        let noNumList = makeNoNumList(fibNums: nums, plus: false)
+        let noNumList = makeNoNumList(fibData: data, plus: false)
         
         VStack
         {

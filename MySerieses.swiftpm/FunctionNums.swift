@@ -13,8 +13,9 @@ func numberSort(fibData: SeriesData) -> [Int]
 }
 
 //fibNumsにある以外の数字の羅列を返す。plusがtrueならfibNums+1の羅列、falseならfibNumsまでの羅列
-func makeNoNumList(fibNums: [Int], plus: Bool) -> [Int]
+func makeNoNumList(fibData: SeriesData, plus: Bool) -> [Int]
 {
+    let fibNums = numberSort(fibData: fibData)
     var fibNoNumList: [Int] = []
     var p = 0
     if(plus)

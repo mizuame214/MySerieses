@@ -14,8 +14,7 @@ struct EditSeriesSettingView: View
     
     var body: some View
     {
-        let nums = numberSort(fibData: thisBooks)
-        let noNumList = makeNoNumList(fibNums: nums, plus: true)
+        let noNumList = makeNoNumList(fibData: thisBooks, plus: true)
         
         VStack
         {
@@ -65,14 +64,8 @@ struct EditSeriesSettingView: View
                 {
                     ZStack
                     {
-                        RoundedRectangle(cornerRadius:8)
-                        .frame(maxWidth:200, maxHeight:60)
+                        DicisionButtonView(text: exit ? "更新" : "作成")
                         .foregroundColor(.teal)
-                        .shadow(radius: 3)
-                        .padding(.vertical, 25)
-                        Text(exit ? "更新" : "作成")
-                        .font(.title2)
-                        .foregroundColor(.white)
                     }
                 }
             }
