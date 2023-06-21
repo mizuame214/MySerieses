@@ -18,6 +18,8 @@ struct DetailSettingView: View
     
     @State var num: Int = 0
     
+    @State var exit: Bool = false
+    
     var body: some View
     {
         VStack
@@ -49,7 +51,6 @@ struct DetailSettingView: View
             }
             if $seriesOrNot.wrappedValue == true
             {
-                //灰色の時は追加できないようにしたい。
                 SeriesNumPicker(noNumList: noNumList, nums: nums, num: $num)
             }
             else
@@ -68,13 +69,17 @@ struct DetailSettingView: View
                 {
                     if $seriesOrNot.wrappedValue == true
                     {
-                        thisBooks.datas.serieses.append(SeriesData(title: titleMS, num: num, datas: SeriesesAndDetailsData(serieses: [], details: [])))
+                        if(exit == false)
+                        {
+                            thisBooks.datas.serieses.append(SeriesData(title: titleMS, num: num, datas: SeriesesAndDetailsData(serieses: [], details: [])))
+                            isPresentShown = false
+                        }
                     }
                     else
                     {
                         thisBooks.datas.details.append(DetailData(title: titleMS, message: messageMS))
+                        isPresentShown = false
                     }
-                    isPresentShown = false
                 }
                 label:
                 {
@@ -82,12 +87,24 @@ struct DetailSettingView: View
                     {
                         RoundedRectangle(cornerRadius:8)
                         .frame(maxWidth:200, maxHeight:60)
-                        .foregroundColor(.teal)
+                        .foregroundColor(exit ? $seriesOrNot.wrappedValue ? Color(red: 0.8, green: 0.8, blue: 0.8) : .teal : .teal)
                         .shadow(radius: 3)
                         .padding(.vertical, 25)
                         Text($seriesOrNot.wrappedValue ? "シリーズ作成" : "詳細作成")
                         .font(.title2)
                         .foregroundColor(.white)
+                    }
+                }
+            }
+            .onChange(of: num)
+            { num in
+                exit = false
+                for n in nums
+                {
+                    if(num == n)
+                    {
+                        exit = true
+                        break
                     }
                 }
             }
