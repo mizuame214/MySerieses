@@ -9,6 +9,8 @@ struct FirstView: View
     @State var fibDetailData: DetailData = DetailData(title: "仮", message: "仮")
     @State var fibSeriesData: SeriesData = SeriesData(title: "仮", num: 0, datas: SeriesesAndDetailsData(serieses: [], details: []))
     
+    @State var noNumList: [Int] = []
+    
     //画面に映ってるシリーズのnumたちをappendしてソートする。
     func numberSort(fibData: SeriesData) -> [Int]
     {
@@ -38,7 +40,6 @@ struct FirstView: View
     var body: some View
     {
         var nums: [Int] = numberSort(fibData: thisBooks)
-        var noNumList: [Int] = makeNoNumList(fibNums: nums)
         
         ZStack
         {
@@ -82,6 +83,7 @@ struct FirstView: View
             {
                 //データ削除
                 //SeriesData.clear(path: seriesJsonPath)
+                noNumList = makeNoNumList(fibNums: nums)
             }
             .onChange(of: thisBooks)
             { thisBooks in
@@ -97,7 +99,7 @@ struct FirstView: View
                 NavigationLink(
                     destination:
                         {
-                            EditView(thisBooks: $thisBooks, noNumList: noNumList, detailData: $fibDetailData, seriesData: $fibSeriesData)
+                            EditView(thisBooks: $thisBooks, detailData: $fibDetailData, seriesData: $fibSeriesData)
                         },
                         label:
                         {

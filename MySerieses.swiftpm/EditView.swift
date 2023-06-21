@@ -8,33 +8,40 @@ struct EditView: View
     @State var isPreDet: Bool = false
     @State var isPreSer: Bool = false
     
-    var noNumList: [Int]
-    
     @State var detailData: Binding<DetailData>
     @State var seriesData: Binding<SeriesData>
+    @State var allNumList: [Int] = []
+    @State var allSerieses: [Binding<SeriesData>] = []
     
     //戻るボタンのカスタム
     @Environment(\.dismiss) var dismiss
     
     func makeAllNumList(fibData: SeriesData) -> [Int]
     {
-        let max = fibData.datas.serieses[fibData.datas.serieses.count - 1].num
-        let nums: [Int] = Array(1...max+1)
+        var max: Int = 1
+        if(fibData.datas.serieses.count != 0)
+        {
+            max = fibData.datas.serieses[fibData.datas.serieses.count - 1 ].num + 1
+        }
+        let nums: [Int] = Array(1...max)
         return nums
     }
-    
+
     func makeAllSeriesesList(fibData: Binding<SeriesData>, allList: [Int]) -> [Binding<SeriesData>]
     {
         var fibAllList: [Binding<SeriesData>] = []
         for i in allList
         {
             var exit: Bool = false
-            for series in fibData.datas.serieses
+            if(fibData.datas.serieses.wrappedValue != [])
             {
-                if(series.num.wrappedValue == i)
+                for series in fibData.datas.serieses
                 {
-                    fibAllList.append(series)
-                    exit = true
+                    if(series.num.wrappedValue == i)
+                    {
+                        fibAllList.append(series)
+                        exit = true
+                    }
                 }
             }
             if(exit == false)
@@ -58,10 +65,6 @@ struct EditView: View
     
     var body: some View
     {
-        //Stateじゃ無いとちゃんと動かないのでは？
-        var allNumList: [Int] = makeAllNumList(fibData: thisBooks)
-        var allSerieses: [Binding<SeriesData>] = makeAllSeriesesList(fibData: $thisBooks, allList: allNumList)
-        
         ZStack
         {
             List
@@ -116,23 +119,42 @@ struct EditView: View
                     { from, to in
                         allSerieses.move(fromOffsets: from, toOffset: to)
                         adjustSeriesesNum(fibAllSerieses: allSerieses)
-                        allNumList = makeAllNumList(fibData: thisBooks)
                     }
                     .onDelete
                     { indexSet in
-                        //持ってるシリーズ消すと重複したシリーズが何故か増えたりすることがあるなんとかして。持ってるシリーズ消したらそのシリーズが空のデータになるようにしておきたい。勝手に詰めないで欲しい。
-                        //もし持ってるシリーズなら、持ってないシリーズなら
-                        //メモ
-                        //self.thisBooks.datas.serieses = thisBooks.datas.serieses.sorted { $0.num < $1.num }
+                        let fibAll = allNumList
+                        allNumList.remove(atOffsets: indexSet)
+                        allSerieses.remove(atOffsets: indexSet)
+                        let removeNum = Array(1...fibAll[fibAll.count-1]).filter
+                        {
+                            v in return !allNumList.contains(v)
+                        }
                         
-                        //indexSetがnumと対応してないから、消すと変なとこが消えちゃう
+                        for ser in $thisBooks.datas.serieses
+                        {
+                            if(ser.num.wrappedValue == removeNum[0])
+                            {
+                                thisBooks.datas.serieses.removeAll(where: {$0 == ser.wrappedValue})
+                                allNumList = fibAll
+                                allSerieses = makeAllSeriesesList(fibData: $thisBooks, allList: allNumList)
+                                break
+                            }
+                        }
+                        allNumList = makeAllNumList(fibData: thisBooks)
+                        allSerieses = makeAllSeriesesList(fibData: $thisBooks, allList: allNumList)
+                        adjustSeriesesNum(fibAllSerieses: allSerieses)
                     }
                     .sheet(isPresented: $isPreSer)
                     {
-                        //noNumListをあげたい
+                        //noNumListをあげたいかも
                         EditSeriesSettingView(thisBooks: $thisBooks, series: seriesData, isPresentShown: $isPreSer)
                     }
                 }
+            }
+            .onAppear
+            {
+                allNumList = makeAllNumList(fibData: thisBooks)
+                allSerieses = makeAllSeriesesList(fibData: $thisBooks, allList: allNumList)
             }
             .listStyle(.insetGrouped)
             .navigationTitle(thisBooks.title)
@@ -148,6 +170,11 @@ struct EditView: View
                 })
             )
             .environment(\.editMode, self.$editMode)
+        }
+        .onChange(of: thisBooks)
+        { thisBooks in
+            allNumList = makeAllNumList(fibData: thisBooks)
+            allSerieses = makeAllSeriesesList(fibData: $thisBooks, allList: allNumList)
         }
     }
 }
