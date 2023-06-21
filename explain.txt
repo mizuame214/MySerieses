@@ -14,11 +14,11 @@ bool whetherUncomplete(SeriesData)：持っているシリーズのシリーズ�
 ※詳細の内容入力部分を複数行にしたい
 
 ＜EditView＞
-：編集モード的な。ここで編集すると元のデータに反映される。
+：編集モード的な。ここで編集すると元のデータに反映される。作れるし消せるし位置変えられる
 
 ☑︎seriesListをいじっても大元は変わらないかもな？ようわからん
 ☑︎変なとこ消えたりする。
-※タイトルとか内容を変えられるようにしたいけどどうやって？
+☑︎※タイトルとか内容を変えられるようにしたいけどどうやって？
 
 [Int] makeAllNumList(SeriesData)：1〜最終巻+1の配列を作る
 [Binding<SeriesData>] makeAllSeriesesList($SeriesData, [Int])：持ってればそれ、持ってなければi巻のデータを作って配列を作る
