@@ -16,12 +16,6 @@ struct EditView: View
     @State var nums: [Int] = []
     @State var noNumList: [Int] = []
     
-    
-    
-    //なんでかわからんが、Editで追加した後、ある最後のシリーズを編集しようとすると壊れるようになった
-    
-    
-    
     //戻るボタンのカスタム
     @Environment(\.dismiss) var dismiss
     
@@ -111,10 +105,6 @@ struct EditView: View
                     { indexSet in
                         thisBooks.datas.details.remove(atOffsets: indexSet)
                     }
-                    .sheet(isPresented: $isPreDet)
-                    {
-                        EditDetailSettingView(detail: detailData, isPresentShown: $isPreDet)
-                    }
                 }
                 
                 //シリーズ部分の表示
@@ -164,10 +154,12 @@ struct EditView: View
                         allNumList = makeAllNumList(fibData: thisBooks)
                         allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
                     }
-                    .sheet(isPresented: $isPreSer)
-                    {
-                        EditSeriesSettingView(thisBooks: $thisBooks, series: seriesData, isPresentShown: $isPreSer)
-                    }
+                }
+                .onChange(of: thisBooks)
+                { thisBooks in
+                    allNumList = makeAllNumList(fibData: thisBooks)
+                    allSerieses = makeAllSeriesesList(allList: allNumList, fibData: $thisBooks)
+                    noNumList = makeNoNumList(fibData: thisBooks, plus: false)
                 }
             }
             .onAppear
@@ -191,11 +183,13 @@ struct EditView: View
             )
             .environment(\.editMode, self.$editMode)
         }
-        .onChange(of: thisBooks)
-        { thisBooks in
-            noNumList = makeNoNumList(fibData: thisBooks, plus: false)
-            allNumList = makeAllNumList(fibData: thisBooks)
-            allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
+        .sheet(isPresented: $isPreSer)
+        {
+            EditSeriesSettingView(thisBooks: $thisBooks, series: $seriesData, isPresentShown: $isPreSer)
+        }
+        .sheet(isPresented: $isPreDet)
+        {
+            EditDetailSettingView(detail: detailData, isPresentShown: $isPreDet)
         }
     }
 }

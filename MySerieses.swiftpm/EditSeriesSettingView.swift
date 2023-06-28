@@ -4,7 +4,7 @@ struct EditSeriesSettingView: View
 {
     @Binding var thisBooks: SeriesData  //裏で表示されてる、追加しようとしてるシリーズデータ
     
-    @Binding var series: SeriesData  //変更するデータ
+    @Binding var series: Binding<SeriesData>  //変更するデータ
     @Binding var isPresentShown: Bool
     
     @State var fibTitle: String = ""
@@ -27,7 +27,7 @@ struct EditSeriesSettingView: View
             {
                 for no in noNumList
                 {
-                    if(series.num == no)
+                    if(series.num.wrappedValue == no)
                     {
                         exit = false
                         textFieldText = "持ってないよ"
@@ -36,7 +36,7 @@ struct EditSeriesSettingView: View
                 }
                 if(exit)
                 {
-                    fibTitle = series.title
+                    fibTitle = series.title.wrappedValue
                 }
             }
             TextField(textFieldText, text: $fibTitle)
@@ -52,11 +52,11 @@ struct EditSeriesSettingView: View
                 {
                     if(exit)
                     {
-                        series = SeriesData(title: fibTitle, num: series.num, datas: series.datas)
+                        series.wrappedValue = SeriesData(title: fibTitle, num: series.num.wrappedValue, datas: series.datas.wrappedValue)
                     }
                     else
                     {
-                        thisBooks.datas.serieses.append(SeriesData(title: fibTitle, num: series.num, datas: SeriesesAndDetailsData(serieses: [], details: [])))
+                        thisBooks.datas.serieses.append(SeriesData(title: fibTitle, num: series.num.wrappedValue, datas: SeriesesAndDetailsData(serieses: [], details: [])))
                     }
                     isPresentShown = false
                 }
