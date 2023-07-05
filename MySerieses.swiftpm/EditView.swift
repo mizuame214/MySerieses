@@ -19,12 +19,13 @@ struct EditView: View
     //戻るボタンのカスタム
     @Environment(\.dismiss) var dismiss
     
-    func makeAllNumList(fibData: SeriesData) -> [Int]
+    func makeAllNumList(fibData: Binding<SeriesData>) -> [Int]
     {
+        self.thisBooks.datas.serieses = thisBooks.datas.serieses.sorted { $0.num < $1.num }
         var max: Int = 1
         if(fibData.datas.serieses.count != 0)
         {
-            max = fibData.datas.serieses[fibData.datas.serieses.count - 1 ].num + 1
+            max = fibData.datas.serieses[fibData.datas.serieses.count - 1 ].num.wrappedValue + 1
         }
         let nums: [Int] = Array(1...max)
         return nums
@@ -127,8 +128,8 @@ struct EditView: View
                     { from, to in
                         allSerieses.move(fromOffsets: from, toOffset: to)
                         adjustSeriesesNum(fibAllSerieses: allSerieses)
-                        allNumList = makeAllNumList(fibData: thisBooks)
-                        allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
+                        allNumList = makeAllNumList(fibData: $thisBooks)
+                        allSerieses = makeAllSeriesesList(allList: allNumList, fibData: $thisBooks)
                     }
                     .onDelete
                     { indexSet in
@@ -145,26 +146,26 @@ struct EditView: View
                             if(ser.num.wrappedValue == removeNum[0])
                             {
                                 thisBooks.datas.serieses.removeAll(where: {$0 == ser.wrappedValue})
-                                allNumList = makeAllNumList(fibData: thisBooks)
+                                allNumList = makeAllNumList(fibData: $thisBooks)
                                 allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
                                 break
                             }
                         }
                         adjustSeriesesNum(fibAllSerieses: allSerieses)
-                        allNumList = makeAllNumList(fibData: thisBooks)
+                        allNumList = makeAllNumList(fibData: $thisBooks)
                         allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
                     }
                 }
                 .onChange(of: thisBooks)
                 { thisBooks in
-                    allNumList = makeAllNumList(fibData: thisBooks)
+                    allNumList = makeAllNumList(fibData: $thisBooks)
                     allSerieses = makeAllSeriesesList(allList: allNumList, fibData: $thisBooks)
                     noNumList = makeNoNumList(fibData: thisBooks, plus: false)
                 }
             }
             .onAppear
             {
-                allNumList = makeAllNumList(fibData: thisBooks)
+                allNumList = makeAllNumList(fibData: $thisBooks)
                 allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
                 noNumList = makeNoNumList(fibData: thisBooks, plus: false)
             }
