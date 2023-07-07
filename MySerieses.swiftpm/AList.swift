@@ -21,11 +21,14 @@ struct AList: View
                     .font(.system(size:15))
                     .foregroundColor(Color(.sRGB, red:1.0, green:0.2, blue:0.2, opacity:1.0))
                     .padding(.trailing, 10)
+                    .onDrop(of: [""], delegate:  DropDelegatesuru())
                 }
                 
                 Text(data.title)
                 .font(.system(size:15))
                 .lineLimit(1)
+                .background(.teal)
+                .onDrop(of: [""], delegate:  DropDelegatesuru())
                 
                 if(noNumList != [] && edit == false)
                 {
@@ -35,8 +38,11 @@ struct AList: View
                     .padding(.horizontal, 2)
                 }
             }
+            .onDrop(of: [""], delegate:  DropDelegatesuru())
         }
         .padding(.vertical, 15)
         .padding(.horizontal, 10)
+        .background(.mint)
+        .onDrop(of: [""], delegate:  DropDelegatesuru())
     }
 }

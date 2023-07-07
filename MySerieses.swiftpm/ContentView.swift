@@ -21,7 +21,7 @@ struct ContentView: View
         VStack
         {
             //初期値
-            FirstView(thisBooks: $books[0])
+            FirstView(thisBooks: $books[0], upBooks: $books[0])
         }
         .onChange(of: books)
         { books in

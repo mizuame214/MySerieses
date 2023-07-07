@@ -3,6 +3,7 @@ import SwiftUI
 struct FirstView: View
 {
     @Binding var thisBooks: SeriesData
+    @Binding var upBooks: SeriesData
     @State var editMode: EditMode = .inactive
     
     //苦し紛れ
@@ -30,7 +31,7 @@ struct FirstView: View
                     { series in
                         NavigationLink( destination:
                         {
-                            FirstView(thisBooks: series)
+                            FirstView(thisBooks: series, upBooks: $thisBooks)
                         },
                         label:
                         {
@@ -57,7 +58,7 @@ struct FirstView: View
                 NavigationLink(
                     destination:
                         {
-                            EditView(thisBooks: $thisBooks, detailData: $fibDetailData, seriesData: $fibSeriesData)
+                            EditView(thisBooks: $thisBooks, upBooks: $upBooks, detailData: $fibDetailData, seriesData: $fibSeriesData)
                         },
                         label:
                         {

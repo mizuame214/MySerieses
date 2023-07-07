@@ -2,7 +2,10 @@ import SwiftUI
 
 struct EditView: View
 {
+    @State var color: Color = .mint
+    
     @Binding var thisBooks: SeriesData
+    @Binding var upBooks: SeriesData
     
     @State var editMode: EditMode = .active
     @State var isPreDet: Bool = false
@@ -29,6 +32,35 @@ struct EditView: View
         }
         let nums: [Int] = Array(1...max)
         return nums
+    }
+    
+//    func nandemoiiya(fibButton: AnyView)
+//    {
+//        //fibButton.window?.registerForDraggedTypes
+//    }
+//
+    //俺は一体何を……？　あれか.draggableしたいんじゃない？
+    func makeAList(fibSeries: Binding<SeriesData>) -> some View
+    {
+        var alistView: AList = AList(data: fibSeries.wrappedValue, edit: true)
+        return alistView
+            .onDrop(of: [""], delegate:  DropDelegatesuru())
+    }
+    
+    func makeAListButton(fibSeries: Binding<SeriesData>) -> some View
+    {
+        var button: Button = Button
+        {
+            seriesData = fibSeries
+            isPreSer = true
+        }
+        label:
+        {
+            AList(data: fibSeries.wrappedValue, edit: true)
+            //.foregroundColor(color)
+        }
+        return button
+            .onDrop(of: [""], delegate:  DropDelegatesuru())
     }
 
     func makeAllSeriesesList(allList: [Int], fibData: Binding<SeriesData>) -> [Binding<SeriesData>]
@@ -70,8 +102,15 @@ struct EditView: View
     
     var body: some View
     {
-        ZStack
+        VStack
         {
+            //仮の場所
+            if(thisBooks.title != "Top")
+            {
+                DragAndDrop2UpView(upBooks: $upBooks)
+                .padding()
+            }
+            
             List
             {
                 //無い巻の表示
@@ -87,6 +126,7 @@ struct EditView: View
                 {
                     ForEach($thisBooks.datas.details)
                     { detail in
+                        //makeButton(fibDetail: detail)
                         Button
                         {
                             detailData = detail
@@ -113,24 +153,39 @@ struct EditView: View
                 {
                     ForEach(allSerieses)
                     { series in
-                        Button
+//                        let alist = makeAList(fibSeries: series)
+//                        Button
+//                        {
+//                            seriesData = series
+//                            isPreSer = true
+//                        }
+//                        label:
+//                        {
+//                            alist
+//                            //AList(data: series.wrappedValue, edit: true)
+//                            //.foregroundColor(color)
+//                        }
+                        makeAListButton(fibSeries: series)
+                        .onDrag
                         {
-                            seriesData = series
-                            isPreSer = true
+                            //こいつのせいでプレビューが使えないドラッグもプレビューで使えなくなったカス
+                            return NSItemProvider(object: NSString())
                         }
-                        label:
+                        /*
+                        preview:
                         {
-                            AList(data: series.wrappedValue, edit: true)
-                            .foregroundColor(.black)
+                              ドラッグ中の見た目
+                            Text(series.title.wrappedValue)
                         }
+                         */
                     }
-                    .onMove
-                    { from, to in
-                        allSerieses.move(fromOffsets: from, toOffset: to)
-                        adjustSeriesesNum(fibAllSerieses: allSerieses)
-                        allNumList = makeAllNumList(fibData: $thisBooks)
-                        allSerieses = makeAllSeriesesList(allList: allNumList, fibData: $thisBooks)
-                    }
+//                    .onMove
+//                    { from, to in
+//                        allSerieses.move(fromOffsets: from, toOffset: to)
+//                        adjustSeriesesNum(fibAllSerieses: allSerieses)
+//                        allNumList = makeAllNumList(fibData: $thisBooks)
+//                        allSerieses = makeAllSeriesesList(allList: allNumList, fibData: $thisBooks)
+//                    }
                     .onDelete
                     { indexSet in
                         let fibAll = allNumList
@@ -140,7 +195,7 @@ struct EditView: View
                         {
                             v in return !allNumList.contains(v)
                         }
-                        
+
                         for ser in $thisBooks.datas.serieses
                         {
                             if(ser.num.wrappedValue == removeNum[0])
