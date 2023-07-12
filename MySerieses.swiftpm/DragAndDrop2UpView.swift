@@ -18,6 +18,6 @@ struct DragAndDrop2UpView: View
             .strokeBorder(Color.gray, style: StrokeStyle(dash: [10]))
             .background(Color.white)
         )
-        .onDrop(of: [""], delegate:  DropDelegatesuru())
+        //.onDrop(of: [""], delegate:  DropDelegatesuru())
     }
 }

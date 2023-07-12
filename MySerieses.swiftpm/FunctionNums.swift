@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 //画面に映ってるシリーズのnumたちをappendしてソートする。
 func numberSort(fibData: SeriesData) -> [Int]
@@ -35,4 +36,14 @@ func makeNoNumList(fibData: SeriesData, plus: Bool) -> [Int]
         fibNoNumList.append(1)
     }
     return fibNoNumList
+}
+
+func adjustSeriesesNum(fibAllSerieses: [Binding<SeriesData>])
+{
+    var i: Int = 1
+    for series in fibAllSerieses
+    {
+        series.num.wrappedValue = i
+        i += 1
+    }
 }

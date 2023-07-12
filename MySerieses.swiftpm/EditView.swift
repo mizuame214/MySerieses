@@ -7,7 +7,7 @@ struct EditView: View
     @Binding var thisBooks: SeriesData
     @Binding var upBooks: SeriesData
     
-    @State var editMode: EditMode = .active
+    //@State var editMode: EditMode = .active
     @State var isPreDet: Bool = false
     @State var isPreSer: Bool = false
     
@@ -18,6 +18,8 @@ struct EditView: View
     
     @State var nums: [Int] = []
     @State var noNumList: [Int] = []
+    
+    @State var dragSeries: Binding<SeriesData>
     
     //戻るボタンのカスタム
     @Environment(\.dismiss) var dismiss
@@ -32,35 +34,6 @@ struct EditView: View
         }
         let nums: [Int] = Array(1...max)
         return nums
-    }
-    
-//    func nandemoiiya(fibButton: AnyView)
-//    {
-//        //fibButton.window?.registerForDraggedTypes
-//    }
-//
-    //俺は一体何を……？　あれか.draggableしたいんじゃない？
-    func makeAList(fibSeries: Binding<SeriesData>) -> some View
-    {
-        var alistView: AList = AList(data: fibSeries.wrappedValue, edit: true)
-        return alistView
-            .onDrop(of: [""], delegate:  DropDelegatesuru())
-    }
-    
-    func makeAListButton(fibSeries: Binding<SeriesData>) -> some View
-    {
-        var button: Button = Button
-        {
-            seriesData = fibSeries
-            isPreSer = true
-        }
-        label:
-        {
-            AList(data: fibSeries.wrappedValue, edit: true)
-            //.foregroundColor(color)
-        }
-        return button
-            .onDrop(of: [""], delegate:  DropDelegatesuru())
     }
 
     func makeAllSeriesesList(allList: [Int], fibData: Binding<SeriesData>) -> [Binding<SeriesData>]
@@ -90,16 +63,6 @@ struct EditView: View
         return fibAllList
     }
     
-    func adjustSeriesesNum(fibAllSerieses: [Binding<SeriesData>])
-    {
-        var i: Int = 1
-        for series in fibAllSerieses
-        {
-            series.num.wrappedValue = i
-            i += 1
-        }
-    }
-    
     var body: some View
     {
         VStack
@@ -111,7 +74,7 @@ struct EditView: View
                 .padding()
             }
             
-            List
+            ScrollView
             {
                 //無い巻の表示
                 if noNumList != []
@@ -151,23 +114,25 @@ struct EditView: View
                 //シリーズ部分の表示
                 Section
                 {
+                    Rectangle()
+                    .frame(maxHeight: 20)
+                    .foregroundColor(.mint)
+                    .onDrop(of: [""], delegate: DropDelegateSurutoMove(allSerieses: $allSerieses, i: 0, dragSeriese: dragSeries))
                     ForEach(allSerieses)
                     { series in
-//                        let alist = makeAList(fibSeries: series)
-//                        Button
-//                        {
-//                            seriesData = series
-//                            isPreSer = true
-//                        }
-//                        label:
-//                        {
-//                            alist
-//                            //AList(data: series.wrappedValue, edit: true)
-//                            //.foregroundColor(color)
-//                        }
-                        makeAListButton(fibSeries: series)
+                        Button
+                        {
+                            seriesData = series
+                            isPreSer = true
+                        }
+                        label:
+                        {
+                            AList(data: series.wrappedValue, edit: true, thisBooks: $thisBooks)
+                                .foregroundColor(.black)
+                        }
                         .onDrag
                         {
+                            dragSeries = series
                             //こいつのせいでプレビューが使えないドラッグもプレビューで使えなくなったカス
                             return NSItemProvider(object: NSString())
                         }
@@ -178,6 +143,11 @@ struct EditView: View
                             Text(series.title.wrappedValue)
                         }
                          */
+                        //隙間で.onMove
+                        Rectangle()
+                        .frame(maxHeight: 20)
+                        .foregroundColor(.mint)
+                        .onDrop(of: [""], delegate: DropDelegateSurutoMove(allSerieses: $allSerieses, i: series.num.wrappedValue, dragSeriese: dragSeries))
                     }
 //                    .onMove
 //                    { from, to in
@@ -186,30 +156,30 @@ struct EditView: View
 //                        allNumList = makeAllNumList(fibData: $thisBooks)
 //                        allSerieses = makeAllSeriesesList(allList: allNumList, fibData: $thisBooks)
 //                    }
-                    .onDelete
-                    { indexSet in
-                        let fibAll = allNumList
-                        allNumList.remove(atOffsets: indexSet)
-                        allSerieses.remove(atOffsets: indexSet)
-                        let removeNum = Array(1...fibAll[fibAll.count-1]).filter
-                        {
-                            v in return !allNumList.contains(v)
-                        }
-
-                        for ser in $thisBooks.datas.serieses
-                        {
-                            if(ser.num.wrappedValue == removeNum[0])
-                            {
-                                thisBooks.datas.serieses.removeAll(where: {$0 == ser.wrappedValue})
-                                allNumList = makeAllNumList(fibData: $thisBooks)
-                                allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
-                                break
-                            }
-                        }
-                        adjustSeriesesNum(fibAllSerieses: allSerieses)
-                        allNumList = makeAllNumList(fibData: $thisBooks)
-                        allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
-                    }
+//                    .onDelete
+//                    { indexSet in
+//                        let fibAll = allNumList
+//                        allNumList.remove(atOffsets: indexSet)
+//                        allSerieses.remove(atOffsets: indexSet)
+//                        let removeNum = Array(1...fibAll[fibAll.count-1]).filter
+//                        {
+//                            v in return !allNumList.contains(v)
+//                        }
+//
+//                        for ser in $thisBooks.datas.serieses
+//                        {
+//                            if(ser.num.wrappedValue == removeNum[0])
+//                            {
+//                                thisBooks.datas.serieses.removeAll(where: {$0 == ser.wrappedValue})
+//                                allNumList = makeAllNumList(fibData: $thisBooks)
+//                                allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
+//                                break
+//                            }
+//                        }
+//                        adjustSeriesesNum(fibAllSerieses: allSerieses)
+//                        allNumList = makeAllNumList(fibData: $thisBooks)
+//                        allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
+//                    }
                 }
                 .onChange(of: thisBooks)
                 { thisBooks in
@@ -237,7 +207,7 @@ struct EditView: View
                     Image(systemName: "checkmark")
                 })
             )
-            .environment(\.editMode, self.$editMode)
+            //.environment(\.editMode, self.$editMode)
         }
         .sheet(isPresented: $isPreSer)
         {

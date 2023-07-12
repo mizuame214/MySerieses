@@ -4,7 +4,7 @@ struct FirstView: View
 {
     @Binding var thisBooks: SeriesData
     @Binding var upBooks: SeriesData
-    @State var editMode: EditMode = .inactive
+    //@State var editMode: EditMode = .inactive
     
     //苦し紛れ
     @State var fibDetailData: DetailData = DetailData(title: "仮", message: "仮")
@@ -35,7 +35,7 @@ struct FirstView: View
                         },
                         label:
                         {
-                            AList(data: series.wrappedValue, edit: false)
+                            AList(data: series.wrappedValue, edit: false, thisBooks: $thisBooks)
                         })
                     }
                     
@@ -58,7 +58,7 @@ struct FirstView: View
                 NavigationLink(
                     destination:
                         {
-                            EditView(thisBooks: $thisBooks, upBooks: $upBooks, detailData: $fibDetailData, seriesData: $fibSeriesData)
+                            EditView(thisBooks: $thisBooks, upBooks: $upBooks, detailData: $fibDetailData, seriesData: $fibSeriesData, dragSeries: $fibSeriesData)
                         },
                         label:
                         {
@@ -66,7 +66,7 @@ struct FirstView: View
                         }
                 )
             )
-            .environment(\.editMode, self.$editMode)
+            //.environment(\.editMode, self.$editMode)
             
             PlusButton(thisBooks: $thisBooks)
         }
