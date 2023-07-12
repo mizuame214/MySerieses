@@ -15,6 +15,6 @@ struct DropDelegateSurutoMove: DropDelegate
     
     func dropEntered(info: DropInfo)
     {
-        //受け入れるようにViewが大きくなったらおもろいかもしれん。
+        //受け入れるように線が入るといい。
     }
 }

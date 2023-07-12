@@ -70,8 +70,9 @@ struct EditView: View
             //仮の場所
             if(thisBooks.title != "Top")
             {
-                DragAndDrop2UpView(upBooks: $upBooks)
+                DragAndDrop2UpView(upBooksTitle: $upBooks.title.wrappedValue)
                 .padding()
+                .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: $upBooks, fromSeries: $thisBooks, series: $dragSeries))
             }
             
             ScrollView
@@ -89,7 +90,6 @@ struct EditView: View
                 {
                     ForEach($thisBooks.datas.details)
                     { detail in
-                        //makeButton(fibDetail: detail)
                         Button
                         {
                             detailData = detail
@@ -114,72 +114,71 @@ struct EditView: View
                 //シリーズ部分の表示
                 Section
                 {
-                    Rectangle()
-                    .frame(maxHeight: 20)
-                    .foregroundColor(.mint)
-                    .onDrop(of: [""], delegate: DropDelegateSurutoMove(allSerieses: $allSerieses, i: 0, dragSeriese: dragSeries))
-                    ForEach(allSerieses)
-                    { series in
-                        Button
-                        {
-                            seriesData = series
-                            isPreSer = true
-                        }
-                        label:
-                        {
-                            AList(data: series.wrappedValue, edit: true, thisBooks: $thisBooks)
-                                .foregroundColor(.black)
-                        }
-                        .onDrag
-                        {
-                            dragSeries = series
-                            //こいつのせいでプレビューが使えないドラッグもプレビューで使えなくなったカス
-                            return NSItemProvider(object: NSString())
-                        }
-                        /*
-                        preview:
-                        {
-                              ドラッグ中の見た目
-                            Text(series.title.wrappedValue)
-                        }
-                         */
-                        //隙間で.onMove
+                    VStack(spacing: 0)
+                    {
                         Rectangle()
                         .frame(maxHeight: 20)
                         .foregroundColor(.mint)
-                        .onDrop(of: [""], delegate: DropDelegateSurutoMove(allSerieses: $allSerieses, i: series.num.wrappedValue, dragSeriese: dragSeries))
+                        .onDrop(of: [""], delegate: DropDelegateSurutoMove(allSerieses: $allSerieses, i: 0, dragSeriese: dragSeries))
+                        ForEach(allSerieses)
+                        { series in
+                            Button
+                            {
+                                seriesData = series
+                                isPreSer = true
+                            }
+                            label:
+                            {
+                                AList(data: series.wrappedValue, edit: true, thisBooks: $thisBooks)
+                                    .foregroundColor(.black)
+                            }
+                            .onDrag
+                            {
+                                dragSeries = series
+                                //こいつのせいでプレビューが使えないドラッグもプレビューで使えなくなったカス
+                                return NSItemProvider(object: NSString())
+                            }
+                            /*
+                            preview:
+                            {
+                                  ドラッグ中の見た目
+                                Text(series.title.wrappedValue)
+                            }
+                             */
+                            //seriesはBinding<SeriesData>、toSeriesはSeriesDataなの問題ありそう。今のところ問題ないし、治し方が分からん。toSeriesをBinding<>にするのはappendが使えなくなるからだめ。
+                            //空っぽを移動させると奇妙なことになる。
+                            .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: series, fromSeries: $thisBooks, series: $dragSeries))
+                            //隙間で.onMove
+                            Rectangle()
+                            .frame(height: 10)
+                            .foregroundColor(.mint)
+                            .onDrop(of: [""], delegate: DropDelegateSurutoMove(allSerieses: $allSerieses, i: series.num.wrappedValue, dragSeriese: dragSeries))
+                        }
+    //                    .onDelete
+    //                    { indexSet in
+    //                        let fibAll = allNumList
+    //                        allNumList.remove(atOffsets: indexSet)
+    //                        allSerieses.remove(atOffsets: indexSet)
+    //                        let removeNum = Array(1...fibAll[fibAll.count-1]).filter
+    //                        {
+    //                            v in return !allNumList.contains(v)
+    //                        }
+    //
+    //                        for ser in $thisBooks.datas.serieses
+    //                        {
+    //                            if(ser.num.wrappedValue == removeNum[0])
+    //                            {
+    //                                thisBooks.datas.serieses.removeAll(where: {$0 == ser.wrappedValue})
+    //                                allNumList = makeAllNumList(fibData: $thisBooks)
+    //                                allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
+    //                                break
+    //                            }
+    //                        }
+    //                        adjustSeriesesNum(fibAllSerieses: allSerieses)
+    //                        allNumList = makeAllNumList(fibData: $thisBooks)
+    //                        allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
+    //                    }
                     }
-//                    .onMove
-//                    { from, to in
-//                        allSerieses.move(fromOffsets: from, toOffset: to)
-//                        adjustSeriesesNum(fibAllSerieses: allSerieses)
-//                        allNumList = makeAllNumList(fibData: $thisBooks)
-//                        allSerieses = makeAllSeriesesList(allList: allNumList, fibData: $thisBooks)
-//                    }
-//                    .onDelete
-//                    { indexSet in
-//                        let fibAll = allNumList
-//                        allNumList.remove(atOffsets: indexSet)
-//                        allSerieses.remove(atOffsets: indexSet)
-//                        let removeNum = Array(1...fibAll[fibAll.count-1]).filter
-//                        {
-//                            v in return !allNumList.contains(v)
-//                        }
-//
-//                        for ser in $thisBooks.datas.serieses
-//                        {
-//                            if(ser.num.wrappedValue == removeNum[0])
-//                            {
-//                                thisBooks.datas.serieses.removeAll(where: {$0 == ser.wrappedValue})
-//                                allNumList = makeAllNumList(fibData: $thisBooks)
-//                                allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
-//                                break
-//                            }
-//                        }
-//                        adjustSeriesesNum(fibAllSerieses: allSerieses)
-//                        allNumList = makeAllNumList(fibData: $thisBooks)
-//                        allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
-//                    }
                 }
                 .onChange(of: thisBooks)
                 { thisBooks in
