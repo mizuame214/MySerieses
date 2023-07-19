@@ -4,12 +4,17 @@ struct DropDelegateSurutoMove: DropDelegate
 {
     @Binding var allSerieses: [Binding<SeriesData>]
     let i: Int
-    let dragSeriese: Binding<SeriesData>
+    let dragData: Any
     
     func performDrop(info: DropInfo) -> Bool
     {
-        allSerieses.move(fromOffsets: [dragSeriese.num.wrappedValue-1], toOffset: i)
-        adjustSeriesesNum(fibAllSerieses: allSerieses)
+        //series以外の侵入禁止
+        if(dragData is Binding<SeriesData>)
+        {
+            let series = dragData as! Binding<SeriesData>
+            allSerieses.move(fromOffsets: [series.num.wrappedValue-1], toOffset: i)
+            adjustSeriesesNum(fibAllSerieses: allSerieses)
+        }
         return true
     }
     

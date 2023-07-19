@@ -12,7 +12,7 @@ struct AList: View
     {
         let noNumList = makeNoNumList(fibData: data, plus: false)
         
-        VStack
+        ZStack
         {
             HStack
             {
@@ -28,7 +28,6 @@ struct AList: View
                 Text(data.title)
                 .font(.system(size:15))
                 .lineLimit(1)
-                .background(.teal)
                 
                 if(noNumList != [] && edit == false)
                 {
@@ -37,10 +36,14 @@ struct AList: View
                     .frame(width: 15, height: 15, alignment: .leading)
                     .padding(.horizontal, 2)
                 }
+                Spacer()
             }
         }
-        .padding(.vertical, 15)
+        .padding(.vertical, 20)
         .padding(.horizontal, 10)
-        .background(.mint)
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+            .stroke(Color.black, lineWidth: 1)
+        )
     }
 }

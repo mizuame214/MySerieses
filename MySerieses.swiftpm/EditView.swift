@@ -15,11 +15,12 @@ struct EditView: View
     @State var seriesData: Binding<SeriesData>
     @State var allNumList: [Int] = []
     @State var allSerieses: [Binding<SeriesData>] = []
+    //@State var detailList: [DetailData] = []
     
     @State var nums: [Int] = []
     @State var noNumList: [Int] = []
     
-    @State var dragSeries: Binding<SeriesData>
+    @State var dragData: Any
     @State var dragColor: Color = .white
     
     //戻るボタンのカスタム
@@ -73,7 +74,7 @@ struct EditView: View
             {
                 DragAndDrop2UpView(upBooksTitle: $upBooks.title.wrappedValue)
                 .padding()
-                .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: $upBooks, fromSeries: $thisBooks, series: $dragSeries, viewColor: $dragColor, check: false))
+                .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: $upBooks, fromSeries: $thisBooks, dragData: $dragData, viewColor: $dragColor, check: false))
             }
             
             ScrollView
@@ -89,26 +90,43 @@ struct EditView: View
                 //詳細部分の表示
                 Section
                 {
-                    ForEach($thisBooks.datas.details)
-                    { detail in
-                        Button
-                        {
-                            detailData = detail
-                            isPreDet = true
+                    VStack(spacing: 0)
+                    {
+                        Rectangle()
+                        .frame(height: 10)
+                        .foregroundColor(.mint)
+                        .onDrop(of: [""], delegate: DropDelegateDetail(details: $thisBooks.datas.details, i: 0, dragData: dragData))
+                        ForEach($thisBooks.datas.details)
+                        { detail in
+                            HStack
+                            {
+                                DeleteButton(detailData: detail.wrappedValue, detailOrSeries: true, data: SeriesData(title: "", num: -1, datas: SeriesesAndDetailsData(serieses: [], details: [])), thisBooks: $thisBooks, allNumList: $allNumList, allSerieses: $allSerieses)
+                                Button
+                                {
+                                    detailData = detail
+                                    isPreDet = true
+                                }
+                                label:
+                                {
+                                    InfoView(title: detail.title.wrappedValue, mainText: detail.message.wrappedValue)
+                                    .foregroundColor(.black)
+                                }
+                                .onDrag
+                                {
+                                    dragData = detail
+                                    return NSItemProvider(object: NSString())
+                                }
+                                preview:
+                                {
+                                    //ドラッグ中の見た目
+                                }
+                            }
+                            //隙間で.onMove
+                            Rectangle()
+                            .frame(height: 10)
+                            .foregroundColor(.mint)
+                            .onDrop(of: [""], delegate: DropDelegateDetail(details: $thisBooks.datas.details, i: thisBooks.datas.details.firstIndex(of: detail.wrappedValue)!+1, dragData: dragData))
                         }
-                        label:
-                        {
-                            InfoView(title: detail.title.wrappedValue, mainText: detail.message.wrappedValue)
-                            .foregroundColor(.black)
-                        }
-                    }
-                    .onMove
-                    { from, to in
-                        thisBooks.datas.details.move(fromOffsets: from, toOffset: to)
-                    }
-                    .onDelete
-                    { indexSet in
-                        thisBooks.datas.details.remove(atOffsets: indexSet)
                     }
                 }
                 
@@ -120,12 +138,12 @@ struct EditView: View
                         Rectangle()
                         .frame(maxHeight: 20)
                         .foregroundColor(.mint)
-                        .onDrop(of: [""], delegate: DropDelegateSurutoMove(allSerieses: $allSerieses, i: 0, dragSeriese: dragSeries))
+                        .onDrop(of: [""], delegate: DropDelegateSurutoMove(allSerieses: $allSerieses, i: 0, dragData: dragData))
                         ForEach(allSerieses)
                         { series in
                             HStack
                             {
-                                DeleteButton(data: series.wrappedValue, thisBooks: $thisBooks, allNumList: $allNumList, allSerieses: $allSerieses)
+                                DeleteButton(detailData: DetailData(title: "", message: ""), detailOrSeries: false, data: series.wrappedValue, thisBooks: $thisBooks, allNumList: $allNumList, allSerieses: $allSerieses)
                                 Button
                                 {
                                     seriesData = series
@@ -138,7 +156,7 @@ struct EditView: View
                                 }
                                 .onDrag
                                 {
-                                    dragSeries = series
+                                    dragData = series
                                     //こいつのせいでプレビューが使えないドラッグもプレビューで使えなくなったカス
                                     return NSItemProvider(object: NSString())
                                 }
@@ -151,13 +169,13 @@ struct EditView: View
                                     .foregroundColor(dragColor)
                                 }
                                 //seriesはBinding<SeriesData>、toSeriesはSeriesDataなの問題ありそう。今のところ問題ない。toSeriesをBinding<>にして、別の変数に一回コピってそいつにappendして、そいつをtoSeriesに入れる方法があるけどようわからん。
-                                .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: series, fromSeries: $thisBooks, series: $dragSeries, viewColor: $dragColor, check: true))
+                                .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: series, fromSeries: $thisBooks, dragData: $dragData, viewColor: $dragColor, check: true))
                             }
                             //隙間で.onMove
                             Rectangle()
                             .frame(height: 10)
                             .foregroundColor(.mint)
-                            .onDrop(of: [""], delegate: DropDelegateSurutoMove(allSerieses: $allSerieses, i: series.num.wrappedValue, dragSeriese: dragSeries))
+                            .onDrop(of: [""], delegate: DropDelegateSurutoMove(allSerieses: $allSerieses, i: series.num.wrappedValue, dragData: dragData))
                         }
                     }
                 }
@@ -165,8 +183,7 @@ struct EditView: View
                 { thisBooks in
                     allNumList = makeAllNumList(fibData: $thisBooks)
                     allSerieses = makeAllSeriesesList(allList: allNumList, fibData: $thisBooks)
-                    noNumList = makeNoNumList(fibData: thisBooks, plus: false)
-                }
+                    noNumList = makeNoNumList(fibData: thisBooks, plus: false)                }
             }
             .onAppear
             {
@@ -174,6 +191,7 @@ struct EditView: View
                 allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
                 noNumList = makeNoNumList(fibData: thisBooks, plus: false)
             }
+            .padding(.horizontal, 20)
             //.listStyle(.insetGrouped)
             .navigationTitle(thisBooks.title)
             .navigationBarBackButtonHidden(true)

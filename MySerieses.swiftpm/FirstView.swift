@@ -58,7 +58,7 @@ struct FirstView: View
                 NavigationLink(
                     destination:
                         {
-                            EditView(thisBooks: $thisBooks, upBooks: $upBooks, detailData: $fibDetailData, seriesData: $fibSeriesData, dragSeries: $fibSeriesData)
+                            EditView(thisBooks: $thisBooks, upBooks: $upBooks, detailData: $fibDetailData, seriesData: $fibSeriesData, dragData: $fibSeriesData)
                         },
                         label:
                         {

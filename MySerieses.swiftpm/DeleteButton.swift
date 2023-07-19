@@ -2,6 +2,10 @@ import SwiftUI
 
 struct DeleteButton: View
 {
+    let detailData: DetailData
+    
+    let detailOrSeries: Bool
+    
     @State var isPresentShown : Bool = false
     let data: SeriesData
     @Binding var thisBooks: SeriesData
@@ -15,7 +19,6 @@ struct DeleteButton: View
             Button
             {
                 isPresentShown = true
-                print("押した")
             }
             label:
             {
@@ -38,20 +41,27 @@ struct DeleteButton: View
                     secondaryButton: .destructive(Text("はい"),
                         action:
                         {
-                            //削除します
-                            let exit = whetherExitOrNo(checkSeries: data, fibData: thisBooks, plus: true)
-                            if(exit)
+                    if(detailOrSeries)
+                    {
+                        thisBooks.datas.details.removeAll(where: {$0 == detailData})
+                    }
+                    else
+                    {
+                        //削除します
+                        let exit = whetherExitOrNo(checkSeries: data, fibData: thisBooks, plus: true)
+                        if(exit)
+                        {
+                            thisBooks.datas.serieses.removeAll(where: {$0 == data})
+                        }
+                        else
+                        {
+                            if(data.num != thisBooks.datas.serieses[thisBooks.datas.serieses.count-1].num+1)
                             {
-                                thisBooks.datas.serieses.removeAll(where: {$0 == data})
+                                allSerieses.remove(atOffsets: [data.num-1])
+                                adjustSeriesesNum(fibAllSerieses: allSerieses)
                             }
-                            else
-                            {
-                                if(data.num != thisBooks.datas.serieses[thisBooks.datas.serieses.count-1].num+1)
-                                {
-                                    allSerieses.remove(atOffsets: [data.num-1])
-                                    adjustSeriesesNum(fibAllSerieses: allSerieses)
-                                }
-                            }
+                        }
+                    }
                         }
                     )
                 )

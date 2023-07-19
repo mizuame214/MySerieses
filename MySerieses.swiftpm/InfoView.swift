@@ -24,7 +24,12 @@ struct InfoView: View
             .padding(.leading,25)
             Spacer()
         }
-        .padding(.top)
+        .padding(.vertical, 20)
+        .padding(.horizontal, 10)
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+            .stroke(Color.black, lineWidth: 1)
+        )
     }
 }
 
