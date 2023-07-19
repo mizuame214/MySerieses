@@ -5,10 +5,21 @@ struct DropDelegatesuru: DropDelegate
     @Binding var toSeries: SeriesData
     @Binding var fromSeries: SeriesData
     @Binding var series: Binding<SeriesData>
+    @Binding var viewColor: Color
+    let check: Bool //toExitを確認するかどうか
 
     //手を離した時の挙動。データを更新する
     func performDrop(info: DropInfo) -> Bool
     {
+        let exit = whetherExitOrNo(checkSeries: series.wrappedValue, fibData: fromSeries, plus: true)
+        let toExit = whetherExitOrNo(checkSeries: toSeries, fibData: fromSeries, plus: true)
+        if(exit == false || (toExit == false && check))
+        {
+            //ないシリーズを・に入れるとこの後の処理全キャンセル
+            print("cancell!!")
+            return true
+        }
+        
         var toInt :Int = 0
         if toSeries.datas.serieses.count != 0
         {
@@ -23,6 +34,14 @@ struct DropDelegatesuru: DropDelegate
     
     func dropEntered(info: DropInfo)
     {
-        
+        let exit = whetherExitOrNo(checkSeries: series.wrappedValue, fibData: fromSeries, plus: true)
+        if(exit)
+        {
+            viewColor = .blue
+        }
+        else
+        {
+            viewColor = .red
+        }
     }
 }

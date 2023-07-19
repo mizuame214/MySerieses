@@ -47,3 +47,17 @@ func adjustSeriesesNum(fibAllSerieses: [Binding<SeriesData>])
         i += 1
     }
 }
+
+func whetherExitOrNo(checkSeries: SeriesData, fibData: SeriesData, plus: Bool) -> Bool
+{
+    let noNumList = makeNoNumList(fibData: fibData, plus: plus)
+    for i in noNumList
+    {
+        //もし無いリストにあるseriesだったら
+        if(checkSeries.num == i)
+        {
+            return false
+        }
+    }
+    return true
+}

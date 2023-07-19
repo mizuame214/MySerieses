@@ -20,6 +20,7 @@ struct EditView: View
     @State var noNumList: [Int] = []
     
     @State var dragSeries: Binding<SeriesData>
+    @State var dragColor: Color = .white
     
     //戻るボタンのカスタム
     @Environment(\.dismiss) var dismiss
@@ -72,7 +73,7 @@ struct EditView: View
             {
                 DragAndDrop2UpView(upBooksTitle: $upBooks.title.wrappedValue)
                 .padding()
-                .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: $upBooks, fromSeries: $thisBooks, series: $dragSeries))
+                .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: $upBooks, fromSeries: $thisBooks, series: $dragSeries, viewColor: $dragColor, check: false))
             }
             
             ScrollView
@@ -138,16 +139,16 @@ struct EditView: View
                                 //こいつのせいでプレビューが使えないドラッグもプレビューで使えなくなったカス
                                 return NSItemProvider(object: NSString())
                             }
-                            /*
                             preview:
                             {
-                                  ドラッグ中の見た目
-                                Text(series.title.wrappedValue)
+                                //もしないシリーズをリストの中に入れようとしてたら見た目も変えたいよね。そうなると判定方法別にとった方がいいよね。
+                                //ドラッグ中の見た目
+                                Rectangle()
+                                    .frame(width : 100, height: 100)
+                                .foregroundColor(dragColor)
                             }
-                             */
-                            //seriesはBinding<SeriesData>、toSeriesはSeriesDataなの問題ありそう。今のところ問題ないし、治し方が分からん。toSeriesをBinding<>にするのはappendが使えなくなるからだめ。
-                            //空っぽを移動させると奇妙なことになる。
-                            .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: series, fromSeries: $thisBooks, series: $dragSeries))
+                            //seriesはBinding<SeriesData>、toSeriesはSeriesDataなの問題ありそう。今のところ問題ない。toSeriesをBinding<>にして、別の変数に一回コピってそいつにappendして、そいつをtoSeriesに入れる方法があるけどようわからん。
+                            .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: series, fromSeries: $thisBooks, series: $dragSeries, viewColor: $dragColor, check: true))
                             //隙間で.onMove
                             Rectangle()
                             .frame(height: 10)
