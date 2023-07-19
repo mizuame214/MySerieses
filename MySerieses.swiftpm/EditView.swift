@@ -123,62 +123,42 @@ struct EditView: View
                         .onDrop(of: [""], delegate: DropDelegateSurutoMove(allSerieses: $allSerieses, i: 0, dragSeriese: dragSeries))
                         ForEach(allSerieses)
                         { series in
-                            Button
+                            HStack
                             {
-                                seriesData = series
-                                isPreSer = true
+                                DeleteButton(data: series.wrappedValue, thisBooks: $thisBooks, allNumList: $allNumList, allSerieses: $allSerieses)
+                                Button
+                                {
+                                    seriesData = series
+                                    isPreSer = true
+                                }
+                                label:
+                                {
+                                    AList(data: series.wrappedValue, edit: true, thisBooks: $thisBooks)
+                                        .foregroundColor(.black)
+                                }
+                                .onDrag
+                                {
+                                    dragSeries = series
+                                    //こいつのせいでプレビューが使えないドラッグもプレビューで使えなくなったカス
+                                    return NSItemProvider(object: NSString())
+                                }
+                                preview:
+                                {
+                                    //もしないシリーズをリストの中に入れようとしてたら見た目も変えたいよね。そうなると判定方法別にとった方がいいよね。
+                                    //ドラッグ中の見た目
+                                    Rectangle()
+                                        .frame(width : 100, height: 100)
+                                    .foregroundColor(dragColor)
+                                }
+                                //seriesはBinding<SeriesData>、toSeriesはSeriesDataなの問題ありそう。今のところ問題ない。toSeriesをBinding<>にして、別の変数に一回コピってそいつにappendして、そいつをtoSeriesに入れる方法があるけどようわからん。
+                                .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: series, fromSeries: $thisBooks, series: $dragSeries, viewColor: $dragColor, check: true))
                             }
-                            label:
-                            {
-                                AList(data: series.wrappedValue, edit: true, thisBooks: $thisBooks)
-                                    .foregroundColor(.black)
-                            }
-                            .onDrag
-                            {
-                                dragSeries = series
-                                //こいつのせいでプレビューが使えないドラッグもプレビューで使えなくなったカス
-                                return NSItemProvider(object: NSString())
-                            }
-                            preview:
-                            {
-                                //もしないシリーズをリストの中に入れようとしてたら見た目も変えたいよね。そうなると判定方法別にとった方がいいよね。
-                                //ドラッグ中の見た目
-                                Rectangle()
-                                    .frame(width : 100, height: 100)
-                                .foregroundColor(dragColor)
-                            }
-                            //seriesはBinding<SeriesData>、toSeriesはSeriesDataなの問題ありそう。今のところ問題ない。toSeriesをBinding<>にして、別の変数に一回コピってそいつにappendして、そいつをtoSeriesに入れる方法があるけどようわからん。
-                            .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: series, fromSeries: $thisBooks, series: $dragSeries, viewColor: $dragColor, check: true))
                             //隙間で.onMove
                             Rectangle()
                             .frame(height: 10)
                             .foregroundColor(.mint)
                             .onDrop(of: [""], delegate: DropDelegateSurutoMove(allSerieses: $allSerieses, i: series.num.wrappedValue, dragSeriese: dragSeries))
                         }
-    //                    .onDelete
-    //                    { indexSet in
-    //                        let fibAll = allNumList
-    //                        allNumList.remove(atOffsets: indexSet)
-    //                        allSerieses.remove(atOffsets: indexSet)
-    //                        let removeNum = Array(1...fibAll[fibAll.count-1]).filter
-    //                        {
-    //                            v in return !allNumList.contains(v)
-    //                        }
-    //
-    //                        for ser in $thisBooks.datas.serieses
-    //                        {
-    //                            if(ser.num.wrappedValue == removeNum[0])
-    //                            {
-    //                                thisBooks.datas.serieses.removeAll(where: {$0 == ser.wrappedValue})
-    //                                allNumList = makeAllNumList(fibData: $thisBooks)
-    //                                allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
-    //                                break
-    //                            }
-    //                        }
-    //                        adjustSeriesesNum(fibAllSerieses: allSerieses)
-    //                        allNumList = makeAllNumList(fibData: $thisBooks)
-    //                        allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
-    //                    }
                     }
                 }
                 .onChange(of: thisBooks)
@@ -194,7 +174,7 @@ struct EditView: View
                 allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
                 noNumList = makeNoNumList(fibData: thisBooks, plus: false)
             }
-            .listStyle(.insetGrouped)
+            //.listStyle(.insetGrouped)
             .navigationTitle(thisBooks.title)
             .navigationBarBackButtonHidden(true)
             .navigationBarItems(trailing:
