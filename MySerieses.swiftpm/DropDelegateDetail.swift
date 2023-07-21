@@ -5,6 +5,7 @@ struct DropDelegateDetail: DropDelegate
     @Binding var details: [DetailData]
     let i: Int
     let dragData: Any
+    @Binding var canDrop: Bool
     
     func performDrop(info: DropInfo) -> Bool
     {
@@ -18,6 +19,17 @@ struct DropDelegateDetail: DropDelegate
     
     func dropEntered(info: DropInfo)
     {
-        
+        if(dragData is Binding<DetailData>)
+        {
+            canDrop = true
+        }
+    }
+    
+    func dropExited(info: DropInfo)
+    {
+        if(dragData is Binding<DetailData>)
+        {
+            canDrop = false
+        }
     }
 }

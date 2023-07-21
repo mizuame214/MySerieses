@@ -8,15 +8,13 @@ struct DragAndDrop2UpView: View
     {
         VStack
         {
-            Text(upBooksTitle)
-            Text("上の階層へ移動する的な")
+            Text("一つ上階層の " + upBooksTitle + " へ移動する")
         }
-        .frame(maxWidth: .infinity, minHeight: 50)
-        .padding()
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 20)
         .background(
-            RoundedRectangle(cornerRadius: 15)
+            RoundedRectangle(cornerRadius: 10)
             .strokeBorder(Color.gray, style: StrokeStyle(dash: [10]))
-            .background(Color.white)
         )
     }
 }

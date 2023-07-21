@@ -1,5 +1,6 @@
 import SwiftUI
 
+//八日以前
 struct DeleteButton: View
 {
     let detailData: DetailData

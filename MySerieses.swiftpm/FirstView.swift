@@ -2,6 +2,7 @@ import SwiftUI
 
 struct FirstView: View
 {
+    @State var editMode: Bool = false
     @Binding var thisBooks: SeriesData
     @Binding var upBooks: SeriesData
     //@State var editMode: EditMode = .inactive
@@ -14,7 +15,7 @@ struct FirstView: View
     {
         ZStack
         {
-            List
+            ScrollView
             {
                 //詳細部分の表示
                 Section
@@ -24,6 +25,7 @@ struct FirstView: View
                         InfoView(title: detail.title.wrappedValue, mainText: detail.message.wrappedValue)
                     }
                 }
+                .padding(.bottom, 11)
                 //シリーズ部分の表示
                 Section
                 {
@@ -38,8 +40,8 @@ struct FirstView: View
                             AList(data: series.wrappedValue, edit: false, thisBooks: $thisBooks)
                         })
                     }
-                    
                 }
+                .padding(.top, 11)
             }
             .listStyle(.insetGrouped)
             .onAppear
@@ -51,14 +53,17 @@ struct FirstView: View
             { thisBooks in
                 self.thisBooks.datas.serieses = thisBooks.datas.serieses.sorted { $0.num < $1.num }
             }
+            .padding(.top, 11)
+            .padding(.horizontal, 20)
             .navigationTitle(thisBooks.title)
             
             //編集モード用
             .navigationBarItems(trailing:
+                //Buttonにして
                 NavigationLink(
                     destination:
                         {
-                            EditView(thisBooks: $thisBooks, upBooks: $upBooks, detailData: $fibDetailData, seriesData: $fibSeriesData, dragData: $fibSeriesData)
+                            EditView(editMode: $editMode, thisBooks: $thisBooks, upBooks: $upBooks, detailData: $fibDetailData, seriesData: $fibSeriesData, dragData: $fibSeriesData)
                         },
                         label:
                         {

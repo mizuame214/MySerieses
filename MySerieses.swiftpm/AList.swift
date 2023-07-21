@@ -41,7 +41,7 @@ struct AList: View
         }
         .padding(.vertical, 20)
         .padding(.horizontal, 10)
-        .overlay(
+        .background(
             RoundedRectangle(cornerRadius: 10)
             .stroke(Color.black, lineWidth: 1)
         )

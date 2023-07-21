@@ -2,7 +2,7 @@ import SwiftUI
 
 struct EditView: View
 {
-    @State var color: Color = .mint
+    @Binding var editMode: Bool
     
     @Binding var thisBooks: SeriesData
     @Binding var upBooks: SeriesData
@@ -15,7 +15,8 @@ struct EditView: View
     @State var seriesData: Binding<SeriesData>
     @State var allNumList: [Int] = []
     @State var allSerieses: [Binding<SeriesData>] = []
-    //@State var detailList: [DetailData] = []
+    
+    @State var canDrop: Bool = false
     
     @State var nums: [Int] = []
     @State var noNumList: [Int] = []
@@ -69,38 +70,38 @@ struct EditView: View
     {
         VStack
         {
-            //仮の場所
             if(thisBooks.title != "Top")
             {
                 DragAndDrop2UpView(upBooksTitle: $upBooks.title.wrappedValue)
                 .padding()
-                .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: $upBooks, fromSeries: $thisBooks, dragData: $dragData, viewColor: $dragColor, check: false))
+                .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: $upBooks, fromSeries: $thisBooks, dragData: $dragData, check: false))
+            }
+            //無い巻の表示
+            if noNumList != []
+            {
+                let noNumStr = noNumList.map {String($0)}
+                let text: String = noNumStr.joined(separator: ", ")
+                InfoView(title: "無い巻", mainText: text)
             }
             
             ScrollView
             {
-                //無い巻の表示
-                if noNumList != []
-                {
-                    let noNumStr = noNumList.map {String($0)}
-                    let text: String = noNumStr.joined(separator: ", ")
-                    InfoView(title: "無い巻", mainText: text)
-                }
                 
                 //詳細部分の表示
                 Section
                 {
                     VStack(spacing: 0)
                     {
-                        Rectangle()
-                        .frame(height: 10)
-                        .foregroundColor(.mint)
-                        .onDrop(of: [""], delegate: DropDelegateDetail(details: $thisBooks.datas.details, i: 0, dragData: dragData))
+                        ForOnMoveBetweenView(canDrop: $canDrop)
+                        .onDrop(of: [""], delegate: DropDelegateDetail(details: $thisBooks.datas.details, i: 0, dragData: dragData, canDrop: $canDrop))
                         ForEach($thisBooks.datas.details)
                         { detail in
                             HStack
                             {
-                                DeleteButton(detailData: detail.wrappedValue, detailOrSeries: true, data: SeriesData(title: "", num: -1, datas: SeriesesAndDetailsData(serieses: [], details: [])), thisBooks: $thisBooks, allNumList: $allNumList, allSerieses: $allSerieses)
+                                if(editMode)
+                                {
+                                    DeleteButton(detailData: detail.wrappedValue, detailOrSeries: true, data: SeriesData(title: "", num: -1, datas: SeriesesAndDetailsData(serieses: [], details: [])), thisBooks: $thisBooks, allNumList: $allNumList, allSerieses: $allSerieses)
+                                }
                                 Button
                                 {
                                     detailData = detail
@@ -122,10 +123,8 @@ struct EditView: View
                                 }
                             }
                             //隙間で.onMove
-                            Rectangle()
-                            .frame(height: 10)
-                            .foregroundColor(.mint)
-                            .onDrop(of: [""], delegate: DropDelegateDetail(details: $thisBooks.datas.details, i: thisBooks.datas.details.firstIndex(of: detail.wrappedValue)!+1, dragData: dragData))
+                            ForOnMoveBetweenView(canDrop: $canDrop)
+                            .onDrop(of: [""], delegate: DropDelegateDetail(details: $thisBooks.datas.details, i: thisBooks.datas.details.firstIndex(of: detail.wrappedValue)!+1, dragData: dragData, canDrop: $canDrop))
                         }
                     }
                 }
@@ -135,9 +134,7 @@ struct EditView: View
                 {
                     VStack(spacing: 0)
                     {
-                        Rectangle()
-                        .frame(maxHeight: 20)
-                        .foregroundColor(.mint)
+                        ForOnMoveBetweenView(canDrop: $canDrop)
                         .onDrop(of: [""], delegate: DropDelegateSurutoMove(allSerieses: $allSerieses, i: 0, dragData: dragData))
                         ForEach(allSerieses)
                         { series in
@@ -157,24 +154,18 @@ struct EditView: View
                                 .onDrag
                                 {
                                     dragData = series
-                                    //こいつのせいでプレビューが使えないドラッグもプレビューで使えなくなったカス
                                     return NSItemProvider(object: NSString())
                                 }
                                 preview:
                                 {
                                     //もしないシリーズをリストの中に入れようとしてたら見た目も変えたいよね。そうなると判定方法別にとった方がいいよね。
                                     //ドラッグ中の見た目
-                                    Rectangle()
-                                        .frame(width : 100, height: 100)
-                                    .foregroundColor(dragColor)
                                 }
                                 //seriesはBinding<SeriesData>、toSeriesはSeriesDataなの問題ありそう。今のところ問題ない。toSeriesをBinding<>にして、別の変数に一回コピってそいつにappendして、そいつをtoSeriesに入れる方法があるけどようわからん。
-                                .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: series, fromSeries: $thisBooks, dragData: $dragData, viewColor: $dragColor, check: true))
+                                .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: series, fromSeries: $thisBooks, dragData: $dragData, check: true))
                             }
                             //隙間で.onMove
-                            Rectangle()
-                            .frame(height: 10)
-                            .foregroundColor(.mint)
+                            ForOnMoveBetweenView(canDrop: $canDrop)
                             .onDrop(of: [""], delegate: DropDelegateSurutoMove(allSerieses: $allSerieses, i: series.num.wrappedValue, dragData: dragData))
                         }
                     }
@@ -192,13 +183,13 @@ struct EditView: View
                 noNumList = makeNoNumList(fibData: thisBooks, plus: false)
             }
             .padding(.horizontal, 20)
-            //.listStyle(.insetGrouped)
             .navigationTitle(thisBooks.title)
             .navigationBarBackButtonHidden(true)
             .navigationBarItems(trailing:
                 Button( action:
                 {
-                    dismiss()
+                    //dismiss()
+                    editMode = !editMode
                 },
                 label:
                 {
