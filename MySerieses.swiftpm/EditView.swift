@@ -95,7 +95,7 @@ struct EditView: View
                         { detail in
                             HStack
                             {
-                                DeleteButton(detailData: detail.wrappedValue, detailOrSeries: true, data: SeriesData(title: "", num: -1, datas: SeriesesAndDetailsData(serieses: [], details: [])), thisBooks: $thisBooks, allNumList: $allNumList, allSerieses: $allSerieses)
+                                DeleteButton(data: detail.wrappedValue, thisBooks: $thisBooks, allSerieses: $allSerieses)
                                 Button
                                 {
                                     detailData = detail
@@ -135,7 +135,7 @@ struct EditView: View
                         { series in
                             HStack
                             {
-                                DeleteButton(detailData: DetailData(title: "", message: ""), detailOrSeries: false, data: series.wrappedValue, thisBooks: $thisBooks, allNumList: $allNumList, allSerieses: $allSerieses)
+                                DeleteButton(data: series.wrappedValue, thisBooks: $thisBooks, allSerieses: $allSerieses)
                                 Button
                                 {
                                     seriesData = series

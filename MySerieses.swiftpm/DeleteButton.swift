@@ -1,16 +1,10 @@
 import SwiftUI
 
-//八日以前
 struct DeleteButton: View
 {
-    let detailData: DetailData
-    
-    let detailOrSeries: Bool
-    
+    let data: Any
     @State var isPresentShown : Bool = false
-    let data: SeriesData
     @Binding var thisBooks: SeriesData
-    @Binding var allNumList: [Int]
     @Binding var allSerieses: [Binding<SeriesData>]
     
     var body: some View
@@ -42,23 +36,25 @@ struct DeleteButton: View
                     secondaryButton: .destructive(Text("はい"),
                         action:
                         {
-                    if(detailOrSeries)
+                    if(data is DetailData)
                     {
-                        thisBooks.datas.details.removeAll(where: {$0 == detailData})
+                        let detail = data as! DetailData
+                        thisBooks.datas.details.removeAll(where: {$0 == detail})
                     }
-                    else
+                    else if(data is SeriesData)
                     {
+                        let series = data as! SeriesData
                         //削除します
-                        let exit = whetherExitOrNo(checkSeries: data, fibData: thisBooks, plus: true)
+                        let exit = whetherExitOrNo(checkSeries: series, fibData: thisBooks, plus: true)
                         if(exit)
                         {
-                            thisBooks.datas.serieses.removeAll(where: {$0 == data})
+                            thisBooks.datas.serieses.removeAll(where: {$0 == series})
                         }
                         else
                         {
-                            if(data.num != thisBooks.datas.serieses[thisBooks.datas.serieses.count-1].num+1)
+                            if(series.num != thisBooks.datas.serieses[thisBooks.datas.serieses.count-1].num+1)
                             {
-                                allSerieses.remove(atOffsets: [data.num-1])
+                                allSerieses.remove(atOffsets: [series.num-1])
                                 adjustSeriesesNum(fibAllSerieses: allSerieses)
                             }
                         }
