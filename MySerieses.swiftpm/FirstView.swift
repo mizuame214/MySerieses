@@ -59,11 +59,10 @@ struct FirstView: View
             
             //編集モード用
             .navigationBarItems(trailing:
-                //Buttonにして
                 NavigationLink(
                     destination:
                         {
-                            EditView(editMode: $editMode, thisBooks: $thisBooks, upBooks: $upBooks, detailData: $fibDetailData, seriesData: $fibSeriesData, dragData: $fibSeriesData)
+                            EditView(thisBooks: $thisBooks, upBooks: $upBooks, detailData: $fibDetailData, seriesData: $fibSeriesData, dragData: $fibSeriesData)
                         },
                         label:
                         {

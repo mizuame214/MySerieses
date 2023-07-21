@@ -2,8 +2,6 @@ import SwiftUI
 
 struct EditView: View
 {
-    @Binding var editMode: Bool
-    
     @Binding var thisBooks: SeriesData
     @Binding var upBooks: SeriesData
     
@@ -16,7 +14,7 @@ struct EditView: View
     @State var allNumList: [Int] = []
     @State var allSerieses: [Binding<SeriesData>] = []
     
-    @State var canDrop: Bool = false
+    @State var dropNum: Int = -1
     
     @State var nums: [Int] = []
     @State var noNumList: [Int] = []
@@ -73,35 +71,31 @@ struct EditView: View
             if(thisBooks.title != "Top")
             {
                 DragAndDrop2UpView(upBooksTitle: $upBooks.title.wrappedValue)
-                .padding()
                 .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: $upBooks, fromSeries: $thisBooks, dragData: $dragData, check: false))
-            }
-            //無い巻の表示
-            if noNumList != []
-            {
-                let noNumStr = noNumList.map {String($0)}
-                let text: String = noNumStr.joined(separator: ", ")
-                InfoView(title: "無い巻", mainText: text)
             }
             
             ScrollView
             {
+                //無い巻の表示
+                if noNumList != []
+                {
+                    let noNumStr = noNumList.map {String($0)}
+                    let text: String = noNumStr.joined(separator: ", ")
+                    InfoView(title: "無い巻", mainText: text)
+                }
                 
                 //詳細部分の表示
                 Section
                 {
                     VStack(spacing: 0)
                     {
-                        ForOnMoveBetweenView(canDrop: $canDrop)
-                        .onDrop(of: [""], delegate: DropDelegateDetail(details: $thisBooks.datas.details, i: 0, dragData: dragData, canDrop: $canDrop))
+                        ForOnMoveBetweenView(i: 0, dropNum: $dropNum, dragData: $dragData, detailOrSeries: true)
+                        .onDrop(of: [""], delegate: DropDelegateDetail(details: $thisBooks.datas.details, i: 0, dragData: dragData, dropNum: $dropNum))
                         ForEach($thisBooks.datas.details)
                         { detail in
                             HStack
                             {
-                                if(editMode)
-                                {
-                                    DeleteButton(detailData: detail.wrappedValue, detailOrSeries: true, data: SeriesData(title: "", num: -1, datas: SeriesesAndDetailsData(serieses: [], details: [])), thisBooks: $thisBooks, allNumList: $allNumList, allSerieses: $allSerieses)
-                                }
+                                DeleteButton(detailData: detail.wrappedValue, detailOrSeries: true, data: SeriesData(title: "", num: -1, datas: SeriesesAndDetailsData(serieses: [], details: [])), thisBooks: $thisBooks, allNumList: $allNumList, allSerieses: $allSerieses)
                                 Button
                                 {
                                     detailData = detail
@@ -123,8 +117,9 @@ struct EditView: View
                                 }
                             }
                             //隙間で.onMove
-                            ForOnMoveBetweenView(canDrop: $canDrop)
-                            .onDrop(of: [""], delegate: DropDelegateDetail(details: $thisBooks.datas.details, i: thisBooks.datas.details.firstIndex(of: detail.wrappedValue)!+1, dragData: dragData, canDrop: $canDrop))
+                            let i = thisBooks.datas.details.firstIndex(of: detail.wrappedValue)!+1
+                            ForOnMoveBetweenView(i: i, dropNum: $dropNum, dragData: $dragData, detailOrSeries: true)
+                            .onDrop(of: [""], delegate: DropDelegateDetail(details: $thisBooks.datas.details, i: i, dragData: dragData, dropNum: $dropNum))
                         }
                     }
                 }
@@ -134,8 +129,8 @@ struct EditView: View
                 {
                     VStack(spacing: 0)
                     {
-                        ForOnMoveBetweenView(canDrop: $canDrop)
-                        .onDrop(of: [""], delegate: DropDelegateSurutoMove(allSerieses: $allSerieses, i: 0, dragData: dragData))
+                        ForOnMoveBetweenView(i: 0, dropNum: $dropNum, dragData: $dragData, detailOrSeries: false)
+                        .onDrop(of: [""], delegate: DropDelegateSurutoMove(allSerieses: $allSerieses, i: 0, dragData: dragData, dropNum: $dropNum))
                         ForEach(allSerieses)
                         { series in
                             HStack
@@ -165,8 +160,9 @@ struct EditView: View
                                 .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: series, fromSeries: $thisBooks, dragData: $dragData, check: true))
                             }
                             //隙間で.onMove
-                            ForOnMoveBetweenView(canDrop: $canDrop)
-                            .onDrop(of: [""], delegate: DropDelegateSurutoMove(allSerieses: $allSerieses, i: series.num.wrappedValue, dragData: dragData))
+                            let i = series.num.wrappedValue
+                            ForOnMoveBetweenView(i: i, dropNum: $dropNum, dragData: $dragData, detailOrSeries: false)
+                            .onDrop(of: [""], delegate: DropDelegateSurutoMove(allSerieses: $allSerieses, i: i, dragData: dragData, dropNum: $dropNum))
                         }
                     }
                 }
@@ -182,14 +178,12 @@ struct EditView: View
                 allSerieses = makeAllSeriesesList(allList: allNumList,fibData: $thisBooks)
                 noNumList = makeNoNumList(fibData: thisBooks, plus: false)
             }
-            .padding(.horizontal, 20)
             .navigationTitle(thisBooks.title)
             .navigationBarBackButtonHidden(true)
             .navigationBarItems(trailing:
                 Button( action:
                 {
-                    //dismiss()
-                    editMode = !editMode
+                    dismiss()
                 },
                 label:
                 {
@@ -198,6 +192,7 @@ struct EditView: View
             )
             //.environment(\.editMode, self.$editMode)
         }
+        .padding(.horizontal, 20)
         .sheet(isPresented: $isPreSer)
         {
             EditSeriesSettingView(thisBooks: $thisBooks, series: $seriesData, isPresentShown: $isPreSer)

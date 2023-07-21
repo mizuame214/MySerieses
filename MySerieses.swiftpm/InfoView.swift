@@ -22,7 +22,6 @@ struct InfoView: View
                 Spacer()
             }
             .padding(.leading,25)
-            Spacer()
         }
         .padding(.vertical, 20)
         .padding(.horizontal, 10)
