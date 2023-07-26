@@ -71,9 +71,8 @@ struct EditView: View
         {
             if(thisBooks.title != "Top")
             {
-                DragAndDrop2UpView(upBooksTitle: $upBooks.title.wrappedValue)
+                DragAndDrop2UpView(upBooksTitle: $upBooks.title.wrappedValue, color: 0 == irekoNum ? .teal.opacity(0.5) : .white)
                     .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: $upBooks, fromSeries: $thisBooks, dragData: $dragData, check: false, dropNum: $irekoNum))
-                    .background(0 == irekoNum ? .teal.opacity(0.5) : .white)
             }
             
             ScrollView
@@ -141,10 +140,8 @@ struct EditView: View
                                 }
                                 label:
                                 {
-                                    AList(data: series.wrappedValue, edit: true, thisBooks: $thisBooks)
+                                    AList(data: series.wrappedValue, edit: true, thisBooks: $thisBooks, color: series.num.wrappedValue == irekoNum ? .teal.opacity(0.5) : .white)
                                     .foregroundColor(.black)
-                                    .background(series.num.wrappedValue == irekoNum ? .teal.opacity(0.5) : .white)
-                                    //まずはあるシリーズに入れようとするとあるシリーズの色がうっすら青くなるのを作りましょう
                                 }
                                 .onDrag
                                 {

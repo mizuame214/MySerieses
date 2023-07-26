@@ -8,12 +8,18 @@ struct AList: View
     
     @Binding var thisBooks: SeriesData
     
+    let color: Color
+    
     var body: some View
     {
         let noNumList = makeNoNumList(fibData: data, plus: false)
         
         ZStack
         {
+            RoundedRectangle(cornerRadius: 10)
+            .frame(height: 60)
+            .foregroundColor(color)
+            
             HStack
             {
                 if(edit)
@@ -38,12 +44,12 @@ struct AList: View
                 }
                 Spacer()
             }
+            .padding(.vertical, 20)
+            .padding(.horizontal, 10)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                .stroke(Color.black, lineWidth: 1)
+            )
         }
-        .padding(.vertical, 20)
-        .padding(.horizontal, 10)
-        .background(
-            RoundedRectangle(cornerRadius: 10)
-            .stroke(Color.black, lineWidth: 1)
-        )
     }
 }

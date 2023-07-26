@@ -37,7 +37,7 @@ struct FirstView: View
                         },
                         label:
                         {
-                            AList(data: series.wrappedValue, edit: false, thisBooks: $thisBooks)
+                            AList(data: series.wrappedValue, edit: false, thisBooks: $thisBooks, color: .white)
                             .foregroundColor(.black)
                         })
                     }
@@ -71,7 +71,6 @@ struct FirstView: View
                         }
                 )
             )
-            //.background(.teal)
             //.environment(\.editMode, self.$editMode)
             
             PlusButton(thisBooks: $thisBooks)
