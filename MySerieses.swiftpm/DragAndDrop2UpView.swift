@@ -14,10 +14,10 @@ struct DragAndDrop2UpView: View
             .foregroundColor(color)
             HStack
             {
-                Text("一つ上階層の ")
+                Text("一つ上の「")
                 Text(upBooksTitle)
                     .lineLimit(1)
-                Text(" へ移動する")
+                Text("」へ移動する")
             }
             .padding(.horizontal)
             .frame(maxWidth: .infinity)

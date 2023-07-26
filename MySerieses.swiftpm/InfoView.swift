@@ -12,6 +12,7 @@ struct InfoView: View
             HStack
             {
                 Text(title)
+                .multilineTextAlignment(.leading)
                 .font(.title2)
                 Spacer()
             }
