@@ -15,6 +15,7 @@ struct EditView: View
     @State var allSerieses: [Binding<SeriesData>] = []
     
     @State var dropNum: Int = -1
+    @State var irekoNum: Int = -1
     
     @State var nums: [Int] = []
     @State var noNumList: [Int] = []
@@ -71,7 +72,8 @@ struct EditView: View
             if(thisBooks.title != "Top")
             {
                 DragAndDrop2UpView(upBooksTitle: $upBooks.title.wrappedValue)
-                .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: $upBooks, fromSeries: $thisBooks, dragData: $dragData, check: false))
+                    .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: $upBooks, fromSeries: $thisBooks, dragData: $dragData, check: false, dropNum: $irekoNum))
+                    .background(0 == irekoNum ? .teal.opacity(0.5) : .white)
             }
             
             ScrollView
@@ -111,10 +113,6 @@ struct EditView: View
                                     dragData = detail
                                     return NSItemProvider(object: NSString())
                                 }
-                                preview:
-                                {
-                                    //ドラッグ中の見た目
-                                }
                             }
                             //隙間で.onMove
                             let i = thisBooks.datas.details.firstIndex(of: detail.wrappedValue)!+1
@@ -144,20 +142,17 @@ struct EditView: View
                                 label:
                                 {
                                     AList(data: series.wrappedValue, edit: true, thisBooks: $thisBooks)
-                                        .foregroundColor(.black)
+                                    .foregroundColor(.black)
+                                    .background(series.num.wrappedValue == irekoNum ? .teal.opacity(0.5) : .white)
+                                    //まずはあるシリーズに入れようとするとあるシリーズの色がうっすら青くなるのを作りましょう
                                 }
                                 .onDrag
                                 {
                                     dragData = series
                                     return NSItemProvider(object: NSString())
                                 }
-                                preview:
-                                {
-                                    //もしないシリーズをリストの中に入れようとしてたら見た目も変えたいよね。そうなると判定方法別にとった方がいいよね。
-                                    //ドラッグ中の見た目
-                                }
                                 //seriesはBinding<SeriesData>、toSeriesはSeriesDataなの問題ありそう。今のところ問題ない。toSeriesをBinding<>にして、別の変数に一回コピってそいつにappendして、そいつをtoSeriesに入れる方法があるけどようわからん。
-                                .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: series, fromSeries: $thisBooks, dragData: $dragData, check: true))
+                                .onDrop(of: [""], delegate:  DropDelegatesuru(toSeries: series, fromSeries: $thisBooks, dragData: $dragData, check: true, dropNum: $irekoNum))
                             }
                             //隙間で.onMove
                             let i = series.num.wrappedValue
@@ -170,7 +165,8 @@ struct EditView: View
                 { thisBooks in
                     allNumList = makeAllNumList(fibData: $thisBooks)
                     allSerieses = makeAllSeriesesList(allList: allNumList, fibData: $thisBooks)
-                    noNumList = makeNoNumList(fibData: thisBooks, plus: false)                }
+                    noNumList = makeNoNumList(fibData: thisBooks, plus: false)
+                }
             }
             .onAppear
             {
