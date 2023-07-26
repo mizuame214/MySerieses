@@ -18,13 +18,15 @@ struct InfoView: View
             HStack
             {
                 Text(mainText)
+                .multilineTextAlignment(.leading)
+                .font(.system(size:16))
                 .padding(.vertical, 5)
                 Spacer()
             }
-            .padding(.leading,25)
+            .padding(.leading,22)
         }
         .padding(.vertical, 20)
-        .padding(.horizontal, 10)
+        .padding(.horizontal, 15)
         .background(
             RoundedRectangle(cornerRadius: 10)
             .stroke(Color.black, lineWidth: 1)

@@ -20,31 +20,37 @@ struct FirstView: View
                 //詳細部分の表示
                 Section
                 {
-                    ForEach($thisBooks.datas.details)
-                    { detail in
-                        InfoView(title: detail.title.wrappedValue, mainText: detail.message.wrappedValue)
+                    VStack(spacing: 0)
+                    {
+                        ForEach($thisBooks.datas.details)
+                        { detail in
+                            InfoView(title: detail.title.wrappedValue, mainText: detail.message.wrappedValue)
+                            .padding(.bottom, 12)
+                        }
                     }
                 }
-                .padding(.bottom, 11)
                 //シリーズ部分の表示
                 Section
                 {
-                    ForEach($thisBooks.datas.serieses)
-                    { series in
-                        NavigationLink( destination:
-                        {
-                            FirstView(thisBooks: series, upBooks: $thisBooks)
-                        },
-                        label:
-                        {
-                            AList(data: series.wrappedValue, edit: false, thisBooks: $thisBooks, color: .white)
-                            .foregroundColor(.black)
-                        })
+                    VStack(spacing: 0)
+                    {
+                        ForEach($thisBooks.datas.serieses)
+                        { series in
+                            NavigationLink( destination:
+                            {
+                                FirstView(thisBooks: series, upBooks: $thisBooks)
+                            },
+                            label:
+                            {
+                                AList(data: series.wrappedValue, edit: false, thisBooks: $thisBooks, color: .white)
+                                .foregroundColor(.black)
+                            })
+                            .padding(.bottom, 12)
+                        }
                     }
                 }
-                .padding(.top, 11)
+                .padding(.top, 12)
             }
-            .listStyle(.insetGrouped)
             .onAppear
             {
                 //データ削除
@@ -54,7 +60,7 @@ struct FirstView: View
             { thisBooks in
                 self.thisBooks.datas.serieses = thisBooks.datas.serieses.sorted { $0.num < $1.num }
             }
-            .padding(.top, 11)
+            .padding(.top, 12)
             .padding(.horizontal, 20)
             .navigationTitle(thisBooks.title)
             
@@ -68,6 +74,7 @@ struct FirstView: View
                         label:
                         {
                             Image.init(systemName: "square.and.pencil")
+                            .foregroundColor(.teal)
                         }
                 )
             )

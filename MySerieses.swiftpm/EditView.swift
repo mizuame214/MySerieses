@@ -21,7 +21,6 @@ struct EditView: View
     @State var noNumList: [Int] = []
     
     @State var dragData: Any
-    @State var dragColor: Color = .white
     
     //戻るボタンのカスタム
     @Environment(\.dismiss) var dismiss
@@ -181,6 +180,7 @@ struct EditView: View
                 label:
                 {
                     Image(systemName: "checkmark")
+                    .foregroundColor(.teal)
                 })
             )
             //.environment(\.editMode, self.$editMode)

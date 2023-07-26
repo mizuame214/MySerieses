@@ -20,7 +20,7 @@ struct DeleteButton: View
                 ZStack
                 {
                     Circle()
-                    .fill(.red)
+                    .fill(.pink)
                     .frame(width:20, height:20)
                     .shadow(radius: 1)
                     

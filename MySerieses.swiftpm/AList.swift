@@ -27,12 +27,12 @@ struct AList: View
                     //巻数の表示
                     Text(String(data.num))
                     .font(.system(size:15))
-                    .foregroundColor(Color(.sRGB, red:1.0, green:0.2, blue:0.2, opacity:1.0))
+                    .foregroundColor(.pink)
                     .padding(.trailing, 10)
                 }
                 
                 Text(data.title)
-                .font(.system(size:15))
+                .font(.system(size:16))
                 .lineLimit(1)
                 
                 if(noNumList != [] && edit == false)
@@ -43,9 +43,16 @@ struct AList: View
                     .padding(.horizontal, 2)
                 }
                 Spacer()
+                
+                if(edit == false)
+                {
+                    Text(">")
+                    .font(.system(size:16))
+                    .foregroundColor(.gray)
+                }
             }
             .padding(.vertical, 20)
-            .padding(.horizontal, 10)
+            .padding(.horizontal, 15)
             .background(
                 RoundedRectangle(cornerRadius: 10)
                 .stroke(Color.black, lineWidth: 1)

@@ -13,6 +13,7 @@ struct MyApp: App
                     .preferredColorScheme(.light)
             }
             .navigationViewStyle(StackNavigationViewStyle())
+            .accentColor(.teal)
         }
     }
 }
